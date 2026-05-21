@@ -1,0 +1,191 @@
+// prisma/schema.prisma
+// SIGMA — Strategic Intelligence for Gizi & Mapping Analysis
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── ENUM ───────────────────────────────────────────────
+
+enum Role {
+  SISWA
+  SPPG
+  PEMERINTAH
+}
+
+enum StatusDapur {
+  AKTIF
+  TIDAK_AKTIF
+  MAINTENANCE
+}
+
+enum StatusLaporan {
+  DITERIMA
+  DIPROSES
+  SELESAI
+  DITOLAK
+}
+
+enum TingkatRisiko {
+  AMAN
+  WASPADA
+  RAWAN
+}
+
+// ─── USER ────────────────────────────────────────────────
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String   // bcrypt hash
+  name      String
+  role      Role
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  siswa Siswa?
+  sppg  SPPG?
+}
+
+// ─── SISWA ───────────────────────────────────────────────
+
+model Siswa {
+  id        String  @id @default(cuid())
+  userId    String  @unique
+  user      User    @relation(fields: [userId], references: [id])
+  sekolahId String
+  sekolah   Sekolah @relation(fields: [sekolahId], references: [id])
+  kelas     String?
+
+  laporan Laporan[]
+}
+
+// ─── SEKOLAH ─────────────────────────────────────────────
+
+model Sekolah {
+  id          String  @id @default(cuid())
+  nama        String
+  alamat      String
+  latitude    Float
+  longitude   Float
+  kecamatan   String
+  kabupaten   String
+  jumlahSiswa Int     @default(0)
+
+  siswa      Siswa[]
+  distribusi Distribusi[]
+  // Dapur yang melayani sekolah ini (many-to-many)
+  dapur      DapurSekolah[]
+}
+
+// ─── DAPUR / SPPG ────────────────────────────────────────
+
+model SPPG {
+  id            String        @id @default(cuid())
+  userId        String        @unique
+  user          User          @relation(fields: [userId], references: [id])
+  namaDapur     String
+  alamat        String
+  latitude      Float
+  longitude     Float
+  kecamatan     String
+  kabupaten     String
+  kapasitasMax  Int           // maks porsi per hari
+  status        StatusDapur   @default(AKTIF)
+  tingkatRisiko TingkatRisiko @default(AMAN)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  distribusi    Distribusi[]
+  sekolah       DapurSekolah[]
+  earlyWarning  EarlyWarning[]
+  clusterResult ClusterResult?
+}
+
+// ─── RELASI DAPUR ↔ SEKOLAH (many-to-many) ──────────────
+
+model DapurSekolah {
+  id        String  @id @default(cuid())
+  sppgId    String
+  sppg      SPPG    @relation(fields: [sppgId], references: [id])
+  sekolahId String
+  sekolah   Sekolah @relation(fields: [sekolahId], references: [id])
+  jarakKm   Float   // jarak dapur ke sekolah dalam km
+
+  @@unique([sppgId, sekolahId])
+}
+
+// ─── DISTRIBUSI HARIAN ───────────────────────────────────
+
+model Distribusi {
+  id          String   @id @default(cuid())
+  sppgId      String
+  sppg        SPPG     @relation(fields: [sppgId], references: [id])
+  sekolahId   String
+  sekolah     Sekolah  @relation(fields: [sekolahId], references: [id])
+  tanggal     DateTime @db.Date
+  jumlahPorsi Int
+  keterangan  String?
+  createdAt   DateTime @default(now())
+
+  @@unique([sppgId, sekolahId, tanggal])
+}
+
+// ─── LAPORAN KELUHAN SISWA ───────────────────────────────
+
+model Laporan {
+  id        String        @id @default(cuid())
+  siswaId   String
+  siswa     Siswa         @relation(fields: [siswaId], references: [id])
+  judul     String
+  isi       String
+  kategori  String        // "makanan tidak datang" | "kualitas" | "lainnya"
+  status    StatusLaporan @default(DITERIMA)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
+
+// ─── EARLY WARNING ───────────────────────────────────────
+
+model EarlyWarning {
+  id         String   @id @default(cuid())
+  sppgId     String
+  sppg       SPPG     @relation(fields: [sppgId], references: [id])
+  tipe       String   // "JARAK_JAUH" | "TIDAK_AKTIF" | "KELUHAN_BERULANG" | "OUTLIER_ML"
+  deskripsi  String
+  isResolved Boolean  @default(false)
+  createdAt  DateTime @default(now())
+}
+
+// ─── HASIL CLUSTERING ML (K-MEANS) ───────────────────────
+
+model ClusterResult {
+  id            String   @id @default(cuid())
+  sppgId        String   @unique
+  sppg          SPPG     @relation(fields: [sppgId], references: [id])
+  clusterId     Int      // ID cluster dari model K-Means
+  isOutlier     Boolean  @default(false)
+  skorEfisiensi Float    // 0.0 - 1.0
+  catatan       String?
+  updatedAt     DateTime @updatedAt
+}
+
+// ─── REKOMENDASI LOKASI BARU ─────────────────────────────
+
+model RekomendasiLokasi {
+  id            String   @id @default(cuid())
+  latitude      Float
+  longitude     Float
+  kecamatan     String
+  kabupaten     String
+  alasan        String   // narasi dari model ML
+  prioritas     Int      // 1 = tertinggi
+  isImplemented Boolean  @default(false)
+  createdAt     DateTime @default(now())
+}
