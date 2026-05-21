@@ -58,12 +58,12 @@ export default function PemerintahClient({ makro }: PemerintahClientProps) {
           <h2 className="text-[32px] font-normal text-ink tracking-tight">Makro Analitik</h2>
           <p className="text-body mt-1">Ringkasan performa program MBG tingkat regional (Kab. Bandung).</p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="airtable-secondary" className="h-10 py-2 px-4 rounded-[8px] text-[14px]">
+        <div className="flex gap-3">
+          <Button className="h-11 px-6 rounded-xl text-sm font-medium bg-[#fffbf7] text-[#124f97] border border-gray-200 hover:bg-gray-50 shadow-sm transition-all">
             Unduh Laporan
           </Button>
           <Link href="/dashboard/pemerintah/peta">
-            <Button variant="airtable-primary" className="h-10 py-2 px-4 rounded-[8px] text-[14px]">
+            <Button className="h-11 px-6 rounded-xl text-sm font-bold bg-[#124f97] text-white hover:bg-[#124f97]/90 shadow-lg shadow-[#124f97]/20 transition-all">
               Lihat Peta Geospasial
             </Button>
           </Link>
@@ -71,74 +71,93 @@ export default function PemerintahClient({ makro }: PemerintahClientProps) {
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="bg-white border-hairline shadow-sm rounded-[10px]">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-body">Total Porsi Disalurkan</CardTitle>
-            <Utensils className="h-4 w-4 text-ink" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-medium text-ink">{makro?.totalPorsiDisalurkan?.toLocaleString('id-ID') || '0'}</div>
-            <p className="text-xs text-success mt-1 flex items-center gap-1">
-              <TrendingUp className="w-3 h-3" /> +12% dari minggu lalu
-            </p>
-          </CardContent>
-        </Card>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Primary KPI */}
+        <div className="bg-[#124f97] rounded-3xl p-6 shadow-xl relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-[#dbda16] rounded-bl-full -mr-4 -mt-4 opacity-90 transition-transform group-hover:scale-110"></div>
+          <div className="relative z-10 flex flex-col h-full justify-between gap-4">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-white/80 uppercase tracking-wider">Total Porsi Disalurkan</span>
+              <Utensils className="h-5 w-5 text-[#dbda16]" />
+            </div>
+            <div>
+              <div className="text-4xl font-bold text-white mb-2">{makro?.totalPorsiDisalurkan?.toLocaleString('id-ID') || '0'}</div>
+              <div className="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-sm px-2.5 py-1 rounded-full text-xs font-medium text-white">
+                <TrendingUp className="w-3.5 h-3.5" /> +12% minggu ini
+              </div>
+            </div>
+          </div>
+        </div>
 
-        <Card className="bg-white border-hairline shadow-sm rounded-[10px]">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-body">Sekolah Tercakup</CardTitle>
-            <School className="h-4 w-4 text-ink" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-medium text-ink">{makro?.totalSekolah || 0}</div>
-            <p className="text-xs text-muted mt-1">Sekolah dalam jaringan distribusi</p>
-          </CardContent>
-        </Card>
+        {/* Secondary KPI 1 */}
+        <div className="bg-[#fffbf7] border border-gray-100 rounded-3xl p-6 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 group">
+          <div className="flex flex-col h-full justify-between gap-4">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-gray-500 uppercase tracking-wider">Sekolah Tercakup</span>
+              <div className="w-10 h-10 rounded-full bg-[#124f97]/10 flex items-center justify-center group-hover:bg-[#124f97] transition-colors">
+                <School className="h-5 w-5 text-[#124f97] group-hover:text-white transition-colors" />
+              </div>
+            </div>
+            <div>
+              <div className="text-3xl font-bold text-[#124f97] mb-1">{makro?.totalSekolah || 0}</div>
+              <p className="text-xs font-medium text-gray-400">Dalam jaringan distribusi</p>
+            </div>
+          </div>
+        </div>
 
-        <Card className="bg-white border-hairline shadow-sm rounded-[10px]">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-body">Dapur Sentral Aktif</CardTitle>
-            <Building2 className="h-4 w-4 text-ink" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-medium text-ink">{makro?.totalDapur || 0}</div>
-            <p className="text-xs text-muted mt-1">Akumulasi seluruh SPPG</p>
-          </CardContent>
-        </Card>
+        {/* Secondary KPI 2 */}
+        <div className="bg-[#fffbf7] border border-gray-100 rounded-3xl p-6 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 group">
+          <div className="flex flex-col h-full justify-between gap-4">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-gray-500 uppercase tracking-wider">Dapur Sentral Aktif</span>
+              <div className="w-10 h-10 rounded-full bg-[#124f97]/10 flex items-center justify-center group-hover:bg-[#124f97] transition-colors">
+                <Building2 className="h-5 w-5 text-[#124f97] group-hover:text-white transition-colors" />
+              </div>
+            </div>
+            <div>
+              <div className="text-3xl font-bold text-[#124f97] mb-1">{makro?.totalDapur || 0}</div>
+              <p className="text-xs font-medium text-gray-400">Akumulasi seluruh SPPG</p>
+            </div>
+          </div>
+        </div>
 
-        <Card className="bg-white border-hairline shadow-sm rounded-[10px] overflow-hidden relative group">
-          <div className="absolute inset-0 bg-success/5 z-0" />
-          <CardHeader className="flex flex-row items-center justify-between pb-2 relative z-10">
-            <CardTitle className="text-sm font-medium text-body">Status Operasional</CardTitle>
-            <CheckCircle2 className="h-4 w-4 text-success" />
-          </CardHeader>
-          <CardContent className="relative z-10">
-            <div className="text-3xl font-medium text-success drop-shadow-sm">AMAN</div>
-            <p className="text-xs text-muted mt-1">Tidak ada anomali terdeteksi</p>
-          </CardContent>
-        </Card>
+        {/* Secondary KPI 3 (Status) */}
+        <div className="bg-white border-2 border-[#124f97]/10 rounded-3xl p-6 shadow-sm hover:border-[#dbda16]/50 hover:shadow-md hover:-translate-y-1 transition-all duration-300 group relative overflow-hidden">
+          <div className="absolute inset-0 bg-green-50/50 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          <div className="relative z-10 flex flex-col h-full justify-between gap-4">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-gray-500 uppercase tracking-wider">Status Operasional</span>
+              <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                <CheckCircle2 className="h-5 w-5 text-green-600" />
+              </div>
+            </div>
+            <div>
+              <div className="text-3xl font-bold text-green-600 mb-1">AMAN</div>
+              <p className="text-xs font-medium text-green-700/70">Tidak ada anomali terdeteksi</p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Next sections with dummy charts since there are no actual APIs yet for complex aggregates */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Distribusi per Kecamatan (Bar Chart) */}
-        <Card className="bg-white border-hairline shadow-sm rounded-[10px]">
-          <CardHeader>
-            <CardTitle className="text-lg font-medium text-ink">Distribusi per Kecamatan</CardTitle>
-            <CardDescription className="text-body">Jumlah porsi MBG berdasarkan wilayah administratif.</CardDescription>
-          </CardHeader>
-          <CardContent className="pb-4">
-            <ChartContainer config={barChartConfig} className="h-[250px] w-full">
+        <div className="bg-[#fffbf7] border border-gray-100 shadow-sm rounded-3xl p-6 lg:p-8 flex flex-col transition-shadow hover:shadow-md">
+          <div className="mb-6">
+            <h3 className="text-xl font-bold text-[#124f97]">Distribusi per Kecamatan</h3>
+            <p className="text-gray-500 text-sm mt-1">Jumlah porsi MBG berdasarkan wilayah administratif.</p>
+          </div>
+          <div className="flex-1 w-full h-[250px]">
+            <ChartContainer config={barChartConfig} className="h-full w-full">
               {/* @ts-ignore */}
               <BarChart accessibilityLayer data={barChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }} layout="vertical">
-                <CartesianGrid horizontal={false} stroke="#e0e2e6" strokeDasharray="4 4" />
+                <CartesianGrid horizontal={false} stroke="#f3f4f6" strokeDasharray="4 4" />
                 <XAxis 
                   type="number"
                   tickLine={false} 
                   axisLine={false} 
                   tickMargin={10} 
-                  stroke="#9297a0" 
+                  stroke="#9ca3af" 
                   fontSize={12}
                 />
                 <YAxis 
@@ -147,66 +166,66 @@ export default function PemerintahClient({ makro }: PemerintahClientProps) {
                   tickLine={false} 
                   axisLine={false} 
                   tickMargin={10} 
-                  stroke="#9297a0" 
+                  stroke="#9ca3af" 
                   fontSize={12}
                 />
-                <ChartTooltip content={<ChartTooltipContent />} cursor={{ fill: '#e0e2e6', opacity: 0.4 }} />
+                <ChartTooltip content={<ChartTooltipContent />} cursor={{ fill: '#f3f4f6', opacity: 0.8 }} />
                 <Bar 
                   dataKey="porsi" 
-                  fill="#181d26" 
-                  radius={[0, 4, 4, 0]} 
-                  barSize={24}
+                  fill="#124f97" 
+                  radius={[0, 8, 8, 0]} 
+                  barSize={28}
                 />
               </BarChart>
             </ChartContainer>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Tren Agregat (Area Chart) */}
-        <Card className="bg-white border-hairline shadow-sm rounded-[10px]">
-          <CardHeader>
-            <CardTitle className="text-lg font-medium text-ink">Tren Distribusi Nasional (Minggu Ini)</CardTitle>
-            <CardDescription className="text-body">Total agregat penyaluran dari seluruh dapur.</CardDescription>
-          </CardHeader>
-          <CardContent className="pb-4">
-            <ChartContainer config={areaChartConfig} className="h-[250px] w-full">
+        <div className="bg-[#fffbf7] border border-gray-100 shadow-sm rounded-3xl p-6 lg:p-8 flex flex-col transition-shadow hover:shadow-md">
+          <div className="mb-6">
+            <h3 className="text-xl font-bold text-[#124f97]">Tren Distribusi Nasional</h3>
+            <p className="text-gray-500 text-sm mt-1">Total agregat penyaluran dari seluruh dapur minggu ini.</p>
+          </div>
+          <div className="flex-1 w-full h-[250px]">
+            <ChartContainer config={areaChartConfig} className="h-full w-full">
               {/* @ts-ignore */}
               <AreaChart accessibilityLayer data={areaChartData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
                 <defs>
                   <linearGradient id="fillTotal" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#1b61c9" stopOpacity={0.1} />
-                    <stop offset="95%" stopColor="#1b61c9" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#dbda16" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#dbda16" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid vertical={false} stroke="#e0e2e6" strokeDasharray="4 4" />
+                <CartesianGrid vertical={false} stroke="#f3f4f6" strokeDasharray="4 4" />
                 <XAxis 
                   dataKey="hari" 
                   tickLine={false} 
                   axisLine={false} 
                   tickMargin={10} 
-                  stroke="#9297a0" 
+                  stroke="#9ca3af" 
                   fontSize={12}
                 />
                 <YAxis 
                   tickLine={false} 
                   axisLine={false} 
                   tickMargin={10} 
-                  stroke="#9297a0" 
+                  stroke="#9ca3af" 
                   fontSize={12}
                 />
-                <ChartTooltip content={<ChartTooltipContent />} cursor={{ stroke: '#1b61c9', strokeWidth: 1, strokeDasharray: '4 4' }} />
+                <ChartTooltip content={<ChartTooltipContent />} cursor={{ stroke: '#124f97', strokeWidth: 1, strokeDasharray: '4 4' }} />
                 <Area 
                   type="monotone"
                   dataKey="total" 
-                  stroke="#1b61c9" 
-                  strokeWidth={2}
+                  stroke="#124f97" 
+                  strokeWidth={3}
                   fillOpacity={1}
                   fill="url(#fillTotal)"
                 />
               </AreaChart>
             </ChartContainer>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
 
     </div>

@@ -9,9 +9,9 @@
   --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
   
-  /* Airtable Primary Brand Tokens */
-  --color-primary: #181d26; /* Ink/Near-black */
-  --color-primary-active: #0d1218;
+  /* SIGMA Custom Brand Tokens */
+  --color-primary: #124f97;
+  --color-primary-active: #0d3a73;
   --color-primary-foreground: #ffffff;
   
   /* Signature Surface Cards */
@@ -20,26 +20,26 @@
   --color-signature-cream: #f5e9d4;
   --color-signature-peach: #fcab79;
   --color-signature-mint: #a8d8c4;
-  --color-signature-yellow: #f4d35e;
+  --color-signature-yellow: #dbda16;
   --color-signature-mustard: #d9a441;
 
   /* Surfaces & Canvas */
-  --color-canvas: #ffffff;
-  --color-surface-soft: #f8fafc;
-  --color-surface-strong: #e0e2e6;
-  --color-surface-dark: #181d26;
-  --color-surface-dark-elevated: #1d1f25;
-  --color-hairline: #dddddd;
+  --color-canvas: #fffbf7;
+  --color-surface-soft: #ffffff;
+  --color-surface-strong: #f0f4f8;
+  --color-surface-dark: #124f97;
+  --color-surface-dark-elevated: #0d3a73;
+  --color-hairline: #e2e8f0;
 
   /* Text & Semantics */
-  --color-ink: #181d26;
-  --color-body: #333840;
-  --color-muted: #41454d;
-  --color-border-strong: #9297a0;
-  --color-link: #1b61c9;
-  --color-link-active: #1a3866;
-  --color-info: #254fad;
-  --color-info-border: #458fff;
+  --color-ink: #124f97;
+  --color-body: #334155;
+  --color-muted: #64748b;
+  --color-border-strong: #94a3b8;
+  --color-link: #124f97;
+  --color-link-active: #dbda16;
+  --color-info: #124f97;
+  --color-info-border: #3b82f6;
   --color-success: #006400;
   --color-success-border: #39bf45;
 
@@ -80,32 +80,34 @@
 
 :root {
   /* Core variables mapped to standard Tailwind colors if needed */
-  --background: #ffffff;
-  --foreground: #333840;
+  --background: #fffbf7;
+  --foreground: #124f97;
   --card: #ffffff;
-  --card-foreground: #333840;
+  --card-foreground: #124f97;
   --popover: #ffffff;
-  --popover-foreground: #333840;
-  --secondary: #e0e2e6;
-  --secondary-foreground: #181d26;
-  --muted: #f8fafc;
-  --muted-foreground: #41454d;
-  --accent: #f8fafc;
-  --accent-foreground: #181d26;
+  --popover-foreground: #124f97;
+  --primary: #124f97;
+  --primary-foreground: #ffffff;
+  --secondary: #dbda16;
+  --secondary-foreground: #124f97;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --accent: #dbda16;
+  --accent-foreground: #124f97;
   --destructive: #aa2d00;
   --destructive-foreground: #ffffff;
-  --border: #dddddd;
-  --input: #dddddd;
-  --ring: #458fff;
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #124f97;
   
-  --sidebar: #ffffff;
-  --sidebar-foreground: #181d26;
-  --sidebar-primary: #181d26;
+  --sidebar: #fffbf7;
+  --sidebar-foreground: #124f97;
+  --sidebar-primary: #124f97;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f8fafc;
-  --sidebar-accent-foreground: #181d26;
-  --sidebar-border: #dddddd;
-  --sidebar-ring: #458fff;
+  --sidebar-accent: #e7edf4;
+  --sidebar-accent-foreground: #124f97;
+  --sidebar-border: #e2e8f0;
+  --sidebar-ring: #124f97;
 }
 
 @layer base {

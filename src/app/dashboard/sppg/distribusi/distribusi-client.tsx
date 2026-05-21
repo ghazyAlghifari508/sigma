@@ -126,7 +126,7 @@ export default function DistribusiClient({ sekolahSasaran, riwayatDistribusi }: 
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-ink font-medium">Sekolah Tujuan</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <Select onValueChange={field.onChange} value={field.value}>
                             <FormControl>
                               <SelectTrigger className="bg-white border-hairline text-ink focus:ring-indigo-600/20">
                                 <SelectValue placeholder="Pilih sekolah" />
