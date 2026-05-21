@@ -1,8 +1,6 @@
-import { getMakroAnalitik } from "@/app/actions/pemerintah";
-import PemerintahClient from "./pemerintah-client";
+import PetaClient from "./peta-client";
 
-export default async function PemerintahOverviewPage() {
-  const makro = await getMakroAnalitik();
-
-  return <PemerintahClient makro={makro} />;
+export default function PemerintahOverviewPage() {
+  // Data di-fetch client-side via API route (GeoJSON terlalu besar untuk SSR)
+  return <PetaClient />;
 }

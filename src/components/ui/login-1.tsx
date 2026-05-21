@@ -31,7 +31,7 @@ const AppInput = (props: InputProps) => {
       {label && <label className="block mb-2 text-sm text-[#124f97] font-medium">{label}</label>}
       <div className="relative w-full">
         <input
-          className="peer relative z-10 border-2 border-gray-200 h-12 w-full rounded-md bg-[#fffbf7] px-4 text-[#124f97] font-normal outline-none drop-shadow-sm transition-all duration-200 ease-in-out focus:bg-white focus:border-[#124f97] placeholder:text-gray-400 placeholder:font-medium"
+          className="peer relative z-10 border-2 border-gray-200 h-12 w-full rounded-md bg-[#fffbf7] px-4 text-[#124f97] font-normal outline-none drop-shadow-sm transition-all duration-200 ease-in-out focus:bg-[#fffbf7] focus:border-[#124f97] placeholder:text-gray-400 placeholder:font-medium"
           placeholder={placeholder}
           onMouseMove={handleMouseMove}
           onMouseEnter={() => setIsHovering(true)}
@@ -128,10 +128,10 @@ const Login1 = () => {
 
 
   return (
-    <div className="min-h-screen w-full bg-white flex font-sans">
+    <div className="h-screen w-full bg-[#fffbf7] flex font-sans overflow-hidden">
       {/* Kiri - Form */}
       <div
-        className="w-full lg:w-1/2 px-6 lg:px-16 xl:px-24 py-10 relative overflow-hidden flex flex-col justify-center"
+        className="w-full lg:w-1/2 px-6 lg:px-16 xl:px-24 py-10 relative overflow-y-auto flex flex-col justify-center"
         onMouseMove={handleMouseMove}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -150,9 +150,10 @@ const Login1 = () => {
         </div>
 
           <div className="relative z-10 w-full max-w-sm mx-auto">
-            <div className="text-center mb-6">
+            <div className="text-center mb-6 flex flex-col items-center">
+              <Image src="/logosigma.png" alt="SIGMA Logo" width={180} height={60} className="object-contain mb-4 mix-blend-multiply" />
               <h1 className="text-3xl md:text-4xl font-extrabold text-[#124f97] tracking-tight mb-2">
-                Masuk ke SIGMA
+                Masuk
               </h1>
               <p className="text-gray-500 text-sm font-medium">Platform optimasi distribusi gizi</p>
             </div>
@@ -205,7 +206,7 @@ const Login1 = () => {
                 </span>
                 {!isPending && (
                   <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-13deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-13deg)_translateX(100%)]">
-                    <div className="relative h-full w-8 bg-white/20" />
+                    <div className="relative h-full w-8 bg-[#fffbf7]/20" />
                   </div>
                 )}
               </button>
@@ -221,19 +222,20 @@ const Login1 = () => {
         </div>
 
         {/* Kanan - Gambar */}
-        <div className="hidden lg:block w-1/2 relative">
+        <div className="hidden lg:block w-1/2 relative h-full">
           <Image
-            src="https://images.unsplash.com/photo-1577962917302-cd874c4e31d2?auto=format&fit=crop&q=80&w=1260&h=750"
-            width={1000}
-            height={1000}
+            src="/mbg.jpg"
+            fill
             priority
             alt="Dashboard SIGMA"
-            className="w-full h-full object-cover"
+            className="object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-l from-transparent to-[#fffbf7]"></div>
           
           <div className="absolute bottom-10 left-10 right-10 text-white p-6 bg-[#124f97]/80 backdrop-blur-md rounded-xl border border-white/20">
-            <h2 className="text-2xl font-bold mb-2">SIGMA</h2>
+            <div className="bg-white/90 inline-block p-2 rounded-lg mb-3">
+              <Image src="/logosigma.png" alt="SIGMA Logo" width={120} height={35} className="object-contain mix-blend-multiply" />
+            </div>
             <p className="text-sm text-white/90 leading-relaxed">
               Strategic Intelligence for Gizi & Mapping Analysis. 
               Platform cerdas berbasis AI K-Means Clustering untuk optimasi penempatan dapur MBG.
@@ -245,3 +247,4 @@ const Login1 = () => {
 };
 
 export default Login1;
+

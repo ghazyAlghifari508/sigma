@@ -35,11 +35,13 @@ export function EdukasiClient({ initialData, authorId }: { initialData: EdukasiI
   const [isPending, startTransition] = useTransition();
   const [openDialog, setOpenDialog] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   // Form states
   const [judul, setJudul] = useState("");
   const [kategori, setKategori] = useState("");
   const [gambarUrl, setGambarUrl] = useState("");
+  const [gambarFile, setGambarFile] = useState<File | null>(null);
   const [konten, setKonten] = useState("");
   const [isPublished, setIsPublished] = useState(true);
 
@@ -47,6 +49,7 @@ export function EdukasiClient({ initialData, authorId }: { initialData: EdukasiI
     setJudul("");
     setKategori("");
     setGambarUrl("");
+    setGambarFile(null);
     setKonten("");
     setIsPublished(true);
     setEditingId(null);
@@ -57,19 +60,25 @@ export function EdukasiClient({ initialData, authorId }: { initialData: EdukasiI
     setJudul(item.judul);
     setKategori(item.kategori);
     setGambarUrl(item.gambarUrl || "");
+    setGambarFile(null);
     setKonten(item.konten);
     setIsPublished(item.isPublished);
     setOpenDialog(true);
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Yakin ingin menghapus artikel edukasi ini?")) return;
+  const handleDeleteClick = (id: string) => {
+    setDeleteId(id);
+  };
+
+  const executeDelete = async () => {
+    if (!deleteId) return;
     
     startTransition(async () => {
-      const res = await deleteEdukasi(id);
+      const res = await deleteEdukasi(deleteId);
       if (res.success) {
         toast.success("Edukasi berhasil dihapus");
-        setData((prev) => prev.filter((item) => item.id !== id));
+        setData((prev) => prev.filter((item) => item.id !== deleteId));
+        setDeleteId(null);
       } else {
         toast.error(res.error || "Gagal menghapus");
       }
@@ -84,10 +93,37 @@ export function EdukasiClient({ initialData, authorId }: { initialData: EdukasiI
     }
 
     startTransition(async () => {
+      let uploadedUrl = gambarUrl;
+
+      // Handle file upload if a new file is selected
+      if (gambarFile) {
+        const formData = new FormData();
+        formData.append("file", gambarFile);
+
+        try {
+          const resUpload = await fetch("/api/upload", {
+            method: "POST",
+            body: formData,
+          });
+
+          if (!resUpload.ok) {
+            throw new Error("Gagal mengunggah gambar");
+          }
+
+          const data = await resUpload.json();
+          if (data.success && data.url) {
+            uploadedUrl = data.url;
+          }
+        } catch (error: any) {
+          toast.error(error.message || "Gagal mengunggah gambar");
+          return;
+        }
+      }
+
       const payload = {
         judul,
         kategori,
-        gambarUrl: gambarUrl || undefined,
+        gambarUrl: uploadedUrl || undefined,
         konten,
         isPublished,
       };
@@ -131,7 +167,7 @@ export function EdukasiClient({ initialData, authorId }: { initialData: EdukasiI
           <DialogTrigger render={<Button variant="airtable-primary" className="h-10 py-2 px-4 rounded-[8px] text-[14px]" />}>
             <Plus className="mr-2 h-4 w-4" /> Tambah Edukasi
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[700px] bg-white border-hairline text-ink max-h-[90vh] overflow-y-auto">
+          <DialogContent className="sm:max-w-[700px] bg-[#fffbf7] border-hairline text-ink max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="text-ink">{editingId ? "Edit Edukasi" : "Tambah Edukasi Baru"}</DialogTitle>
               <DialogDescription className="text-body">
@@ -146,7 +182,7 @@ export function EdukasiClient({ initialData, authorId }: { initialData: EdukasiI
                   id="judul" 
                   value={judul} 
                   onChange={(e) => setJudul(e.target.value)} 
-                  className="bg-white border-hairline text-ink" 
+                  className="bg-[#fffbf7] border-hairline text-ink" 
                   placeholder="Contoh: Pentingnya Sarapan Pagi" 
                 />
               </div>
@@ -158,19 +194,29 @@ export function EdukasiClient({ initialData, authorId }: { initialData: EdukasiI
                     id="kategori" 
                     value={kategori} 
                     onChange={(e) => setKategori(e.target.value)} 
-                    className="bg-white border-hairline text-ink" 
+                    className="bg-[#fffbf7] border-hairline text-ink" 
                     placeholder="Contoh: Gizi, Kesehatan" 
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="gambar" className="text-ink">URL Gambar Cover (Opsional)</Label>
+                  <Label htmlFor="gambar" className="text-ink">Gambar Cover (Opsional)</Label>
                   <Input 
                     id="gambar" 
-                    value={gambarUrl} 
-                    onChange={(e) => setGambarUrl(e.target.value)} 
-                    className="bg-white border-hairline text-ink" 
-                    placeholder="https://images.unsplash.com/..." 
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files.length > 0) {
+                        setGambarFile(e.target.files[0]);
+                      }
+                    }} 
+                    className="bg-[#fffbf7] border-hairline text-ink cursor-pointer" 
                   />
+                  {gambarUrl && !gambarFile && (
+                    <p className="text-xs text-muted truncate">Gambar saat ini: {gambarUrl.split('/').pop()}</p>
+                  )}
+                  {gambarFile && (
+                    <p className="text-xs text-indigo-600 truncate">File dipilih: {gambarFile.name}</p>
+                  )}
                 </div>
               </div>
 
@@ -185,7 +231,7 @@ export function EdukasiClient({ initialData, authorId }: { initialData: EdukasiI
                   id="konten" 
                   value={konten} 
                   onChange={(e) => setKonten(e.target.value)} 
-                  className="bg-white border-hairline text-ink min-h-[250px] font-mono text-sm" 
+                  className="bg-[#fffbf7] border-hairline text-ink min-h-[250px] font-mono text-sm" 
                   placeholder="Tulis konten edukasi di sini..." 
                 />
               </div>
@@ -196,7 +242,7 @@ export function EdukasiClient({ initialData, authorId }: { initialData: EdukasiI
                   id="isPublished" 
                   checked={isPublished} 
                   onChange={(e) => setIsPublished(e.target.checked)} 
-                  className="rounded border-hairline bg-white"
+                  className="rounded border-hairline bg-[#fffbf7]"
                 />
                 <Label htmlFor="isPublished" className="text-ink">Publikasikan segera</Label>
               </div>
@@ -212,9 +258,39 @@ export function EdukasiClient({ initialData, authorId }: { initialData: EdukasiI
             </form>
           </DialogContent>
         </Dialog>
+
+        {/* Modal Konfirmasi Hapus */}
+        <Dialog open={!!deleteId} onOpenChange={(open) => !open && setDeleteId(null)}>
+          <DialogContent className="sm:max-w-[425px] bg-[#fffbf7] border-hairline text-ink">
+            <DialogHeader>
+              <DialogTitle className="text-ink">Konfirmasi Hapus</DialogTitle>
+              <DialogDescription className="text-body">
+                Apakah Anda yakin ingin menghapus artikel edukasi ini? Tindakan ini tidak dapat dibatalkan.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex justify-end gap-3 mt-6">
+              <Button 
+                variant="ghost" 
+                onClick={() => setDeleteId(null)}
+                disabled={isPending}
+                className="text-body hover:text-ink"
+              >
+                Batal
+              </Button>
+              <Button 
+                variant="destructive" 
+                onClick={executeDelete}
+                disabled={isPending}
+                className="bg-red-600 hover:bg-red-700 text-white"
+              >
+                {isPending ? "Menghapus..." : "Ya, Hapus"}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
 
-      <Card className="bg-white border-hairline shadow-sm rounded-[10px]">
+      <Card className="bg-[#fffbf7] border-hairline shadow-sm rounded-[10px]">
         <CardHeader>
           <CardTitle className="text-lg font-medium text-ink">Daftar Artikel Edukasi</CardTitle>
           <CardDescription className="text-body">Total {data.length} artikel telah dibuat.</CardDescription>
@@ -256,7 +332,7 @@ export function EdukasiClient({ initialData, authorId }: { initialData: EdukasiI
                           <Button variant="ghost" size="icon" onClick={() => handleEdit(item)} className="h-8 w-8 text-body hover:text-indigo-600">
                             <Edit className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="icon" onClick={() => handleDelete(item.id)} className="h-8 w-8 text-body hover:text-destructive" disabled={isPending}>
+                          <Button variant="ghost" size="icon" onClick={() => handleDeleteClick(item.id)} className="h-8 w-8 text-body hover:text-destructive" disabled={isPending}>
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
@@ -272,3 +348,4 @@ export function EdukasiClient({ initialData, authorId }: { initialData: EdukasiI
     </div>
   );
 }
+

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LogOut, LayoutDashboard, Map, BrainCircuit, LineChart, ShieldCheck, BookOpen, MessageSquareWarning } from "lucide-react";
+import { LogOut, LayoutDashboard, Map, BrainCircuit, LineChart, ShieldCheck, BookOpen, MessageSquareWarning, ClipboardCheck } from "lucide-react";
 import { signOut } from "next-auth/react";
 
 import {
@@ -21,9 +21,9 @@ import { Button } from "@/components/ui/button";
 
 const menuItems = [
   {
-    title: "Overview",
+    title: "Overview Peta",
     url: "/dashboard/pemerintah",
-    icon: LayoutDashboard,
+    icon: Map,
   },
   {
     title: "Keluhan & Laporan",
@@ -31,14 +31,9 @@ const menuItems = [
     icon: MessageSquareWarning,
   },
   {
-    title: "Peta Wilayah",
-    url: "/dashboard/pemerintah/peta",
-    icon: Map,
-  },
-  {
-    title: "Analitik Makro",
-    url: "/dashboard/pemerintah/analitik",
-    icon: LineChart,
+    title: "Verifikasi Dapur",
+    url: "/dashboard/pemerintah/verifikasi",
+    icon: ClipboardCheck,
   },
   {
     title: "Edukasi Gizi",
@@ -52,7 +47,7 @@ export function PemerintahSidebar() {
 
   return (
     <Sidebar variant="sidebar" className="border-r border-gray-100 bg-[#fffbf7]">
-      <SidebarHeader className="flex items-center h-16 border-b border-gray-100 px-6 bg-white">
+      <SidebarHeader className="flex items-center h-16 border-b border-gray-100 px-6 bg-[#fffbf7]">
         <Link href="/dashboard/pemerintah" className="flex items-center gap-2">
           <ShieldCheck className="h-6 w-6 text-[#124f97]" />
           <span className="font-bold tracking-wider uppercase text-lg text-[#124f97]">Pemerintah</span>
@@ -104,3 +99,4 @@ export function PemerintahSidebar() {
     </Sidebar>
   );
 }
+

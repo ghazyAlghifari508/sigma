@@ -25,7 +25,7 @@
 
   /* Surfaces & Canvas */
   --color-canvas: #fffbf7;
-  --color-surface-soft: #ffffff;
+  --color-surface-soft: #fffbf7;
   --color-surface-strong: #f0f4f8;
   --color-surface-dark: #124f97;
   --color-surface-dark-elevated: #0d3a73;
@@ -82,9 +82,9 @@
   /* Core variables mapped to standard Tailwind colors if needed */
   --background: #fffbf7;
   --foreground: #124f97;
-  --card: #ffffff;
+  --card: #fffbf7;
   --card-foreground: #124f97;
-  --popover: #ffffff;
+  --popover: #fffbf7;
   --popover-foreground: #124f97;
   --primary: #124f97;
   --primary-foreground: #ffffff;

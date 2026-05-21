@@ -9,10 +9,7 @@ export default function LandingPage() {
       {/* Navbar */}
       <nav className="absolute top-0 w-full z-50 px-6 py-6 lg:px-12 flex items-center justify-between">
         <div className="flex items-center gap-2 text-[#124f97]">
-          <div className="w-8 h-8 rounded-full bg-[#124f97] flex items-center justify-center">
-            <span className="text-white font-bold text-xl leading-none tracking-tighter">S</span>
-          </div>
-          <span className="font-semibold text-xl tracking-tight">SIGMA</span>
+          <Image src="/logosigma.png" alt="SIGMA Logo" width={65} height={24} className="object-contain mix-blend-multiply brightness-[1.1] contrast-[1.2]" />
         </div>
         
         <div className="hidden md:flex items-center gap-8 text-[#124f97]/80 text-sm font-medium">
@@ -35,7 +32,7 @@ export default function LandingPage() {
         
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center relative z-10">
           <div className="text-[#124f97] space-y-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-[#124f97]/10 text-sm font-medium shadow-sm">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#fffbf7] border border-[#124f97]/10 text-sm font-medium shadow-sm">
               <span className="w-2 h-2 rounded-full bg-[#dbda16] animate-pulse"></span>
               Platform Gizi & Mapping Analysis
             </div>
@@ -65,26 +62,11 @@ export default function LandingPage() {
             {/* Organic/Geometric background shape */}
             <div className="absolute inset-0 bg-[#dbda16] rounded-[120px] rounded-tl-none rounded-br-[40px] transform rotate-3 scale-90 lg:scale-100 opacity-90"></div>
             
-            {/* Floating UI Elements */}
-            <div className="absolute -left-4 md:-left-8 top-1/4 bg-white border border-gray-100 rounded-2xl p-4 shadow-xl text-[#124f97] flex flex-col items-center gap-2 z-20 hidden sm:flex animate-bounce" style={{animationDuration: '3s'}}>
-               <div className="flex -space-x-3">
-                 <div className="w-10 h-10 rounded-full bg-slate-200 border-2 border-white overflow-hidden relative"><Image src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100" alt="Avatar" fill className="object-cover" /></div>
-                 <div className="w-10 h-10 rounded-full bg-slate-300 border-2 border-white overflow-hidden relative"><Image src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=100" alt="Avatar" fill className="object-cover" /></div>
-                 <div className="w-10 h-10 rounded-full bg-slate-400 border-2 border-white overflow-hidden relative"><Image src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=100" alt="Avatar" fill className="object-cover" /></div>
-               </div>
-               <span className="text-xs font-bold px-2 py-1 bg-[#dbda16] text-[#124f97] rounded-full mt-1">+12k Sekolah</span>
-            </div>
-            
-            <div className="absolute -bottom-4 right-4 md:right-8 bg-white border-2 border-[#124f97]/10 rounded-full px-4 py-2 text-[#124f97] font-bold shadow-lg z-20 flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-[#124f97]"></div>
-              Akurasi 98%
-            </div>
-
             {/* Main Image */}
             <div className="relative w-[85%] h-[85%] rounded-[100px] rounded-tl-none rounded-br-[32px] overflow-hidden shadow-2xl z-10 border-8 border-white bg-slate-200">
               <Image 
-                src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
-                alt="Distribusi Makanan" 
+                src="/mbg_pak_prabowo.jpg" 
+                alt="Program Makan Bergizi Gratis" 
                 fill
                 className="object-cover transform hover:scale-105 transition-transform duration-700"
               />
@@ -94,7 +76,7 @@ export default function LandingPage() {
       </section>
 
       {/* Services Section */}
-      <section id="layanan" className="py-24 px-6 lg:px-12 bg-white text-center">
+      <section id="layanan" className="py-24 px-6 lg:px-12 bg-[#fffbf7] text-center">
         <div className="max-w-7xl mx-auto space-y-16">
           <div className="space-y-4">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#124f97] text-white text-sm font-medium shadow-sm">
@@ -114,7 +96,7 @@ export default function LandingPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Card 1 */}
-            <div className="group rounded-3xl bg-slate-50 border border-slate-100 overflow-hidden text-left hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+            <div className="group rounded-3xl bg-[#fffbf7] border border-slate-100 overflow-hidden text-left hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
               <div className="h-48 relative overflow-hidden bg-slate-200">
                 <Image src="https://images.unsplash.com/photo-1524661135-423995f22d0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" fill alt="Dapur SPPG Aktif" className="object-cover group-hover:scale-110 transition-transform duration-500" />
               </div>
@@ -130,7 +112,7 @@ export default function LandingPage() {
             </div>
 
             {/* Card 2 */}
-            <div className="group rounded-3xl bg-slate-50 border border-slate-100 overflow-hidden text-left hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+            <div className="group rounded-3xl bg-[#fffbf7] border border-slate-100 overflow-hidden text-left hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
               <div className="h-48 relative overflow-hidden bg-slate-200">
                 <Image src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" fill alt="Siswa Konfirmasi" className="object-cover group-hover:scale-110 transition-transform duration-500" />
               </div>
@@ -146,7 +128,7 @@ export default function LandingPage() {
             </div>
 
             {/* Card 3 */}
-            <div className="group rounded-3xl bg-slate-50 border border-slate-100 overflow-hidden text-left hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+            <div className="group rounded-3xl bg-[#fffbf7] border border-slate-100 overflow-hidden text-left hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
               <div className="h-48 relative overflow-hidden bg-slate-200">
                 <Image src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" fill alt="Dashboard Pemerintah" className="object-cover group-hover:scale-110 transition-transform duration-500" />
               </div>
@@ -172,7 +154,7 @@ export default function LandingPage() {
           </h2>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
-            <div className="bg-white rounded-3xl p-6 md:p-8 border border-slate-100 hover:border-[#dbda16]/50 transition-colors shadow-sm">
+            <div className="bg-[#fffbf7] rounded-3xl p-6 md:p-8 border border-slate-100 hover:border-[#dbda16]/50 transition-colors shadow-sm">
               <div className="text-3xl lg:text-5xl font-bold text-[#124f97] mb-2">98%</div>
               <div className="text-slate-500 text-xs md:text-sm font-medium">Akurasi Data Makanan</div>
             </div>
@@ -183,12 +165,12 @@ export default function LandingPage() {
               <div className="text-white/90 text-xs md:text-sm font-medium relative z-10">Cakupan Sekolah</div>
             </div>
             
-            <div className="bg-white rounded-3xl p-6 md:p-8 border border-slate-100 hover:border-[#dbda16]/50 transition-colors shadow-sm">
+            <div className="bg-[#fffbf7] rounded-3xl p-6 md:p-8 border border-slate-100 hover:border-[#dbda16]/50 transition-colors shadow-sm">
               <div className="text-3xl lg:text-5xl font-bold text-[#124f97] mb-2">&lt;3<span className="text-lg lg:text-2xl text-slate-400">dtk</span></div>
               <div className="text-slate-500 text-xs md:text-sm font-medium">Waktu Muat Real-time</div>
             </div>
             
-            <div className="bg-white rounded-3xl p-6 md:p-8 border border-slate-100 hover:border-[#dbda16]/50 transition-colors shadow-sm">
+            <div className="bg-[#fffbf7] rounded-3xl p-6 md:p-8 border border-slate-100 hover:border-[#dbda16]/50 transition-colors shadow-sm">
               <div className="text-3xl lg:text-5xl font-bold text-[#124f97] mb-2">3</div>
               <div className="text-slate-500 text-xs md:text-sm font-medium">Role Terintegrasi</div>
             </div>
@@ -197,7 +179,7 @@ export default function LandingPage() {
       </section>
 
       {/* About Section */}
-      <section id="tentang" className="py-24 px-6 lg:px-12 bg-white relative overflow-hidden">
+      <section id="tentang" className="py-24 px-6 lg:px-12 bg-[#fffbf7] relative overflow-hidden">
         {/* Decorative elements */}
         <div className="absolute right-0 bottom-0 w-96 h-96 border-[40px] border-[#124f97]/5 rounded-full translate-x-1/3 translate-y-1/3"></div>
         <div className="absolute left-0 top-1/2 w-64 h-64 border-[30px] border-[#124f97]/5 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
@@ -207,11 +189,11 @@ export default function LandingPage() {
             <div className="absolute inset-0 bg-[#dbda16] rounded-[100px] rounded-bl-none transform -rotate-6 scale-95 origin-bottom-left"></div>
             
             <div className="relative aspect-square rounded-[80px] rounded-br-none overflow-hidden shadow-2xl border-8 border-white bg-slate-200">
-               <Image src="https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Team discussing data" fill className="object-cover" />
+               <Image src="/dapur.jpeg" alt="Aktivitas Dapur" fill className="object-cover" />
             </div>
             
             {/* Badge overlay */}
-            <div className="absolute -bottom-8 -right-4 lg:-right-8 w-32 h-32 lg:w-40 lg:h-40 bg-white rounded-full p-2 shadow-2xl hidden sm:block border-2 border-slate-50">
+            <div className="absolute -bottom-8 -right-4 lg:-right-8 w-32 h-32 lg:w-40 lg:h-40 bg-[#fffbf7] rounded-full p-2 shadow-2xl hidden sm:block border-2 border-slate-50">
               <div className="w-full h-full border border-dashed border-[#124f97]/30 rounded-full flex flex-col items-center justify-center text-center">
                 <span className="text-[#124f97] font-bold text-2xl lg:text-3xl">AI</span>
                 <span className="text-slate-500 text-[10px] lg:text-xs font-medium uppercase tracking-widest mt-1">Powered</span>
@@ -279,7 +261,7 @@ export default function LandingPage() {
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
-            <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 hover:shadow-md hover:border-[#124f97]/20 transition-all">
+            <div className="bg-[#fffbf7] rounded-3xl p-8 shadow-sm border border-slate-100 hover:shadow-md hover:border-[#124f97]/20 transition-all">
               <div className="w-12 h-12 rounded-2xl bg-[#124f97] flex items-center justify-center mb-6">
                 <ShieldCheck className="w-6 h-6 text-[#dbda16]" />
               </div>
@@ -289,7 +271,7 @@ export default function LandingPage() {
               </p>
             </div>
             
-            <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 hover:shadow-md hover:border-[#124f97]/20 transition-all">
+            <div className="bg-[#fffbf7] rounded-3xl p-8 shadow-sm border border-slate-100 hover:shadow-md hover:border-[#124f97]/20 transition-all">
               <div className="w-12 h-12 rounded-2xl bg-[#124f97] flex items-center justify-center mb-6">
                 <Target className="w-6 h-6 text-[#dbda16]" />
               </div>
@@ -299,7 +281,7 @@ export default function LandingPage() {
               </p>
             </div>
             
-            <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 hover:shadow-md hover:border-[#124f97]/20 transition-all">
+            <div className="bg-[#fffbf7] rounded-3xl p-8 shadow-sm border border-slate-100 hover:shadow-md hover:border-[#124f97]/20 transition-all">
               <div className="w-12 h-12 rounded-2xl bg-[#124f97] flex items-center justify-center mb-6">
                 <CalendarCheck className="w-6 h-6 text-[#dbda16]" />
               </div>
@@ -309,7 +291,7 @@ export default function LandingPage() {
               </p>
             </div>
             
-            <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 hover:shadow-md hover:border-[#124f97]/20 transition-all">
+            <div className="bg-[#fffbf7] rounded-3xl p-8 shadow-sm border border-slate-100 hover:shadow-md hover:border-[#124f97]/20 transition-all">
               <div className="w-12 h-12 rounded-2xl bg-[#124f97] flex items-center justify-center mb-6">
                 <Stethoscope className="w-6 h-6 text-[#dbda16]" />
               </div>
@@ -329,3 +311,4 @@ export default function LandingPage() {
     </div>
   );
 }
+

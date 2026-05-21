@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
+import { prisma } from "@/lib/prisma";
 
 let cachedData: any[] | null = null;
 
@@ -36,9 +37,28 @@ export async function GET(request: NextRequest) {
       data = data.filter((d: any) => d.provinsi === normalized);
     }
 
-    return NextResponse.json(data, {
+    // Ambil data SPPG dari database riil
+    const dbSppgs = await prisma.sPPG.findMany(
+      province && province !== "Semua" ? { where: { kabupaten: { contains: province, mode: 'insensitive' } } } : undefined
+    );
+
+    const mappedDbSppg = dbSppgs.map(d => ({
+      id: d.id,
+      lng: d.longitude,
+      lat: d.latitude,
+      nama_sppg: d.namaDapur,
+      provinsi: "JAWA BARAT", // Mock for Hackathon since DB currently sets kabupaten as province in dummy
+      kabupaten: d.kabupaten,
+      kecamatan: d.kecamatan,
+      status: d.status,
+    }));
+
+    // Gabungkan data statis dan data riil
+    const finalData = [...data, ...mappedDbSppg];
+
+    return NextResponse.json(finalData, {
       headers: {
-        "Cache-Control": "public, max-age=3600, s-maxage=3600",
+        "Cache-Control": "public, max-age=0", // Disable cache to see new pending SPPG instantly
       },
     });
   } catch (err: any) {

@@ -10,7 +10,7 @@ const buttonVariants = cva(
       variant: {
         default: "bg-[#181d26] text-white hover:bg-[#0d1218] rounded-[12px] px-6 py-4",
         outline:
-          "border border-[#dddddd] bg-white text-[#181d26] hover:bg-[#f8fafc] rounded-[12px] px-6 py-4",
+          "border border-[#dddddd] bg-[#fffbf7] text-[#181d26] hover:bg-[#f8fafc] rounded-[12px] px-6 py-4",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80 aria-expanded:bg-secondary aria-expanded:text-secondary-foreground",
         ghost:
@@ -19,9 +19,9 @@ const buttonVariants = cva(
           "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
         link: "text-[#1b61c9] hover:text-[#1a3866] underline-offset-4 hover:underline",
         "airtable-primary": "bg-[#181d26] text-white hover:bg-[#0d1218] rounded-[12px] px-6 py-4 h-auto font-medium text-[16px]",
-        "airtable-secondary": "border border-[#dddddd] bg-white text-[#181d26] hover:bg-[#f8fafc] rounded-[12px] px-6 py-4 h-auto font-medium text-[16px]",
-        "airtable-secondary-on-dark": "bg-white text-[#181d26] hover:bg-[#f8fafc] rounded-[12px] px-6 py-4 h-auto font-medium text-[16px]",
-        "airtable-pricing-pill": "bg-white text-[#181d26] hover:bg-[#f8fafc] rounded-full px-6 py-3 h-auto font-medium text-[16px]",
+        "airtable-secondary": "border border-[#dddddd] bg-[#fffbf7] text-[#181d26] hover:bg-[#f8fafc] rounded-[12px] px-6 py-4 h-auto font-medium text-[16px]",
+        "airtable-secondary-on-dark": "bg-[#fffbf7] text-[#181d26] hover:bg-[#f8fafc] rounded-[12px] px-6 py-4 h-auto font-medium text-[16px]",
+        "airtable-pricing-pill": "bg-[#fffbf7] text-[#181d26] hover:bg-[#f8fafc] rounded-full px-6 py-3 h-auto font-medium text-[16px]",
       },
       size: {
         default:
@@ -60,3 +60,4 @@ function Button({
 }
 
 export { Button, buttonVariants }
+

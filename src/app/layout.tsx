@@ -25,7 +25,7 @@ export default function RootLayout({
       lang="id"
       className={`${inter.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans">
+      <body className="min-h-full flex flex-col font-sans bg-[#fffbf7]">
         <TooltipProvider>{children}</TooltipProvider>
       </body>
     </html>

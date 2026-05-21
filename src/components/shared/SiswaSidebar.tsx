@@ -53,7 +53,7 @@ export function SiswaSidebar() {
 
   return (
     <Sidebar variant="sidebar" className="border-r border-gray-100 bg-[#fffbf7]">
-      <SidebarHeader className="flex items-center h-16 border-b border-gray-100 px-6 bg-white">
+      <SidebarHeader className="flex items-center h-16 border-b border-gray-100 px-6 bg-[#fffbf7]">
         <Link href="/dashboard/siswa" className="flex items-center gap-2">
           <Utensils className="h-6 w-6 text-[#124f97]" />
           <span className="font-bold tracking-wider uppercase text-lg text-[#124f97]">Sigma Siswa</span>
@@ -100,3 +100,4 @@ export function SiswaSidebar() {
     </Sidebar>
   );
 }
+
