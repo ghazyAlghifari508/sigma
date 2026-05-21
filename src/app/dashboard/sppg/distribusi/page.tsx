@@ -1,7 +1,14 @@
-export default function DistribusiSPPGPage() {
+import { getSekolahSasaranSppg, getDistribusiSppg } from "@/app/actions/sppg";
+import DistribusiClient from "./distribusi-client";
+
+export default async function DistribusiPage() {
+  const sekolahSasaran = await getSekolahSasaranSppg();
+  const riwayatDistribusi = await getDistribusiSppg();
+
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-semibold">Distribusi Harian — Coming Soon</h1>
-    </div>
+    <DistribusiClient 
+      sekolahSasaran={sekolahSasaran} 
+      riwayatDistribusi={riwayatDistribusi} 
+    />
   );
 }

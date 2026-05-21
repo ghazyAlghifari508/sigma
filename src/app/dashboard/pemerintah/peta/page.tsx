@@ -1,7 +1,6 @@
+import PetaClient from "./peta-client";
+
 export default function PetaPemerintahPage() {
-  return (
-    <div className="p-6">
-      <h1 className="text-2xl font-semibold">Peta Interaktif — Coming Soon</h1>
-    </div>
-  );
+  // Data di-fetch client-side via API route (GeoJSON terlalu besar untuk SSR)
+  return <PetaClient />;
 }

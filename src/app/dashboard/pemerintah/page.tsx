@@ -1,7 +1,8 @@
-export default function DashboardPemerintahPage() {
-  return (
-    <div className="p-6">
-      <h1 className="text-2xl font-semibold">Dashboard Pemerintah — Coming Soon</h1>
-    </div>
-  );
+import { getMakroAnalitik } from "@/app/actions/pemerintah";
+import PemerintahClient from "./pemerintah-client";
+
+export default async function PemerintahOverviewPage() {
+  const makro = await getMakroAnalitik();
+
+  return <PemerintahClient makro={makro} />;
 }

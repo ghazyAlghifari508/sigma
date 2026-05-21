@@ -2,8 +2,7 @@
 // SIGMA — Strategic Intelligence for Gizi & Mapping Analysis
 
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -49,8 +48,9 @@ model User {
   updatedAt DateTime @updatedAt
 
   // Relations
-  siswa Siswa?
-  sppg  SPPG?
+  siswa   Siswa?
+  sppg    SPPG?
+  edukasi Edukasi[]
 }
 
 // ─── SISWA ───────────────────────────────────────────────
@@ -63,7 +63,8 @@ model Siswa {
   sekolah   Sekolah @relation(fields: [sekolahId], references: [id])
   kelas     String?
 
-  laporan Laporan[]
+  laporan     Laporan[]
+  scanMakanan ScanMakanan[]
 }
 
 // ─── SEKOLAH ─────────────────────────────────────────────
@@ -106,6 +107,7 @@ model SPPG {
   sekolah       DapurSekolah[]
   earlyWarning  EarlyWarning[]
   clusterResult ClusterResult?
+  laporan       Laporan[]
 }
 
 // ─── RELASI DAPUR ↔ SEKOLAH (many-to-many) ──────────────
@@ -147,6 +149,9 @@ model Laporan {
   isi       String
   kategori  String        // "makanan tidak datang" | "kualitas" | "lainnya"
   status    StatusLaporan @default(DITERIMA)
+  sppgId    String?
+  sppg      SPPG?         @relation(fields: [sppgId], references: [id])
+  tanggapan String?       @db.Text
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
 }
@@ -188,4 +193,31 @@ model RekomendasiLokasi {
   prioritas     Int      // 1 = tertinggi
   isImplemented Boolean  @default(false)
   createdAt     DateTime @default(now())
+}
+
+// ─── KONTEN EDUKASI GIZI & KESEHATAN ─────────────────────
+
+model Edukasi {
+  id          String   @id @default(cuid())
+  judul       String
+  konten      String   @db.Text
+  gambarUrl   String?
+  kategori    String   // contoh: "Nutrisi", "Kesehatan"
+  isPublished Boolean  @default(true)
+  authorId    String
+  author      User     @relation(fields: [authorId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ─── AI SCAN MAKANAN (SISWA) ─────────────────────────────
+
+model ScanMakanan {
+  id        String   @id @default(cuid())
+  siswaId   String
+  siswa     Siswa    @relation(fields: [siswaId], references: [id])
+  imageUrl  String   @db.Text
+  analisis  String   @db.Text
+  isAman    Boolean
+  createdAt DateTime @default(now())
 }
