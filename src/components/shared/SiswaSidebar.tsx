@@ -52,17 +52,17 @@ export function SiswaSidebar() {
   const pathname = usePathname();
 
   return (
-    <Sidebar variant="sidebar" className="border-r border-hairline bg-surface-soft text-ink">
-      <SidebarHeader className="flex items-center h-16 border-b border-hairline px-6 bg-white">
+    <Sidebar variant="sidebar" className="border-r border-gray-100 bg-[#fffbf7]">
+      <SidebarHeader className="flex items-center h-16 border-b border-gray-100 px-6 bg-white">
         <Link href="/dashboard/siswa" className="flex items-center gap-2">
-          <Utensils className="h-6 w-6 text-indigo-600" />
-          <span className="font-bold tracking-wider uppercase text-lg text-indigo-600">Sigma</span>
+          <Utensils className="h-6 w-6 text-[#124f97]" />
+          <span className="font-bold tracking-wider uppercase text-lg text-[#124f97]">Sigma Siswa</span>
         </Link>
       </SidebarHeader>
 
-      <SidebarContent className="px-3 py-4 bg-surface-soft">
+      <SidebarContent className="px-3 py-4 bg-[#fffbf7]">
         <SidebarGroup>
-          <SidebarGroupLabel className="text-body uppercase tracking-widest text-xs mb-2">
+          <SidebarGroupLabel className="text-gray-400 uppercase tracking-widest text-xs mb-2 font-semibold">
             Menu Siswa
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -73,10 +73,10 @@ export function SiswaSidebar() {
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton 
                       isActive={isActive} 
-                      className={isActive ? "bg-white text-indigo-600 shadow-sm border border-hairline" : "text-body hover:text-ink hover:bg-white/60"}
+                      className={isActive ? "!bg-[#124f97] !text-white shadow-md font-medium rounded-xl transition-all" : "text-gray-500 hover:!text-[#124f97] hover:!bg-[#e7edf4] rounded-xl transition-all"}
                       render={<Link href={item.url} />}
                     >
-                      <item.icon className="h-4 w-4" />
+                      <item.icon className="h-5 w-5" />
                       <span>{item.title}</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -87,13 +87,13 @@ export function SiswaSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-hairline p-4 bg-white">
+      <SidebarFooter className="border-t border-gray-100 p-4 bg-[#fffbf7]">
         <Button 
           variant="ghost" 
-          className="w-full justify-start text-body hover:text-destructive hover:bg-destructive/10"
+          className="w-full justify-start text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors"
           onClick={() => signOut({ callbackUrl: "/login" })}
         >
-          <LogOut className="mr-2 h-4 w-4" />
+          <LogOut className="mr-2 h-5 w-5" />
           Keluar
         </Button>
       </SidebarFooter>
