@@ -73,7 +73,7 @@ export default function KeluhanClient({ initialKeluhan }: KeluhanClientProps) {
         </div>
       </div>
 
-      <Card className="bg-white border-hairline shadow-sm rounded-[10px]">
+      <Card className="bg-[#fffbf7] border-hairline shadow-sm rounded-[10px]">
         <CardHeader className="border-b border-hairline pb-4 bg-surface-soft">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <CardTitle className="text-lg font-medium text-ink">Daftar Tiket Keluhan Eskalasi</CardTitle>
@@ -82,7 +82,7 @@ export default function KeluhanClient({ initialKeluhan }: KeluhanClientProps) {
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-body" />
                 <Input 
                   placeholder="Cari keluhan..." 
-                  className="pl-9 bg-white border-hairline text-ink focus-visible:ring-indigo-600/20 h-9"
+                  className="pl-9 bg-[#fffbf7] border-hairline text-ink focus-visible:ring-indigo-600/20 h-9"
                 />
               </div>
             </div>
@@ -137,7 +137,7 @@ export default function KeluhanClient({ initialKeluhan }: KeluhanClientProps) {
 
                       {/* Evaluasi Form */}
                       {evaluasiId === keluhan.id && (
-                        <div className="mt-3 p-3 bg-white border border-indigo-200 rounded-md shadow-sm">
+                        <div className="mt-3 p-3 bg-[#fffbf7] border border-indigo-200 rounded-md shadow-sm">
                           <span className="text-sm font-medium text-indigo-600 block mb-2">Beri Evaluasi/Tanggapan</span>
                           <Textarea 
                             placeholder="Ketik tanggapan atau evaluasi atas keluhan ini..."
@@ -198,3 +198,4 @@ export default function KeluhanClient({ initialKeluhan }: KeluhanClientProps) {
     </div>
   );
 }
+

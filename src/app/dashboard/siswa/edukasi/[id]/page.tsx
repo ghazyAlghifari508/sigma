@@ -1,72 +1,84 @@
 import { getEdukasiById } from "@/app/actions/edukasi";
-import { notFound } from "next/navigation";
-import { MarkdownViewer } from "@/components/shared/MarkdownViewer";
 import Link from "next/link";
-import { ChevronLeft, Calendar, User } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { ArrowLeft, CalendarIcon } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 
-export default async function EdukasiDetailPage({ params }: { params: { id: string } }) {
-  const result = await getEdukasiById(params.id);
+export default async function SiswaEdukasiDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params;
+  const result = await getEdukasiById(resolvedParams.id);
   
   if (!result.success || !result.data) {
-    notFound();
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-center animate-in fade-in duration-500">
+        <h2 className="text-2xl font-semibold text-ink mb-2">Edukasi Tidak Ditemukan</h2>
+        <p className="text-body mb-6">Artikel edukasi yang Anda cari mungkin sudah dihapus atau tidak tersedia.</p>
+        <Link href="/dashboard/siswa/edukasi" className="text-indigo-600 hover:text-indigo-700 flex items-center font-medium">
+          <ArrowLeft className="w-4 h-4 mr-2" /> Kembali ke Daftar Edukasi
+        </Link>
+      </div>
+    );
   }
 
-  const article = result.data;
+  const edukasi = result.data;
 
   return (
-    <div className="max-w-3xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-16">
-      
-      <Link href="/dashboard/siswa/edukasi">
-        <Button variant="ghost" className="text-body hover:text-ink -ml-4">
-          <ChevronLeft className="mr-2 h-4 w-4" /> Kembali ke Daftar Edukasi
-        </Button>
+    <div className="max-w-4xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
+      <Link href="/dashboard/siswa/edukasi" className="text-body hover:text-indigo-600 flex items-center w-fit transition-colors mb-6">
+        <ArrowLeft className="w-4 h-4 mr-2" />
+        Kembali ke Daftar Edukasi
       </Link>
 
-      <article className="bg-white border-hairline rounded-[10px] overflow-hidden shadow-sm">
-        {article.gambarUrl && (
-          <div className="w-full h-64 sm:h-80 md:h-96 relative">
+      <Card className="bg-[#fffbf7] border-hairline shadow-sm rounded-[12px] overflow-hidden">
+        {edukasi.gambarUrl ? (
+          <div className="w-full h-64 md:h-[400px] overflow-hidden bg-surface-soft relative">
             <img 
-              src={article.gambarUrl} 
-              alt={article.judul} 
-              className="w-full h-full object-cover" 
+              src={edukasi.gambarUrl} 
+              alt={edukasi.judul} 
+              className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+          </div>
+        ) : (
+          <div className="w-full h-32 bg-gradient-to-br from-indigo-100 to-indigo-50 border-b border-hairline flex items-center justify-center">
+             <span className="text-indigo-300 text-3xl font-medium tracking-tight">SIGMA Edukasi</span>
           </div>
         )}
 
-        <div className={`p-6 md:p-10 ${!article.gambarUrl ? "pt-10" : "-mt-20 relative z-10"}`}>
-          <Badge className="bg-indigo-50 text-indigo-600 border-indigo-200 mb-4 backdrop-blur-sm">
-            {article.kategori}
-          </Badge>
-          
-          <h1 className="text-[32px] md:text-[40px] font-normal text-ink mb-6 leading-tight tracking-tight">
-            {article.judul}
-          </h1>
-
-          <div className="flex flex-wrap items-center gap-4 text-sm text-body mb-10 pb-6 border-b border-hairline">
-            <div className="flex items-center">
-              <Calendar className="mr-2 h-4 w-4" />
-              {new Date(article.createdAt).toLocaleDateString("id-ID", {
-                weekday: 'long',
+        <div className="p-6 md:p-10">
+          <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+            <Badge variant="outline" className="text-indigo-600 border-indigo-600/20 bg-indigo-50 text-sm px-3 py-1">
+              {edukasi.kategori}
+            </Badge>
+            <div className="flex items-center text-sm text-body">
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {new Date(edukasi.createdAt).toLocaleDateString("id-ID", {
+                weekday: "long",
                 day: "numeric",
                 month: "long",
                 year: "numeric"
               })}
             </div>
-            <div className="flex items-center">
-              <User className="mr-2 h-4 w-4" />
-              {article.author.name}
-            </div>
           </div>
 
-          <div className="text-ink">
-            <MarkdownViewer content={article.konten} />
+          <h1 className="text-3xl md:text-4xl font-bold text-ink mb-8 leading-tight tracking-tight">
+            {edukasi.judul}
+          </h1>
+
+          <div className="prose prose-indigo max-w-none text-ink prose-headings:text-ink prose-a:text-indigo-600">
+            <ReactMarkdown>
+              {edukasi.konten}
+            </ReactMarkdown>
           </div>
         </div>
-      </article>
-      
+        
+        <CardFooter className="bg-surface-soft border-t border-hairline px-6 py-4 flex justify-between items-center text-sm text-body">
+          <span>Diterbitkan oleh: <span className="font-medium text-ink">{edukasi.author?.name || "Tim SIGMA"}</span></span>
+          <Link href="/dashboard/siswa/edukasi" className="text-indigo-600 hover:underline font-medium">
+            Selesai Membaca
+          </Link>
+        </CardFooter>
+      </Card>
     </div>
   );
 }

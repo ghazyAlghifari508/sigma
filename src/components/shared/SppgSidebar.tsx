@@ -26,11 +26,6 @@ const menuItems = [
     icon: LayoutDashboard,
   },
   {
-    title: "Distribusi Harian",
-    url: "/dashboard/sppg/distribusi",
-    icon: Truck,
-  },
-  {
     title: "Keluhan Siswa",
     url: "/dashboard/sppg/keluhan",
     icon: MessageSquareWarning,
@@ -45,7 +40,7 @@ export function SppgSidebar() {
 
   return (
     <Sidebar variant="sidebar" className="border-r border-gray-100 bg-[#fffbf7]">
-      <SidebarHeader className="flex items-center h-16 border-b border-gray-100 px-6 bg-white">
+      <SidebarHeader className="flex items-center h-16 border-b border-gray-100 px-6 bg-[#fffbf7]">
         <Link href="/dashboard/sppg" className="flex items-center gap-2">
           <Building2 className="h-6 w-6 text-[#124f97]" />
           <span className="font-bold tracking-wider uppercase text-lg text-[#124f97]">Dapur SPPG</span>
@@ -99,3 +94,4 @@ export function SppgSidebar() {
     </Sidebar>
   );
 }
+

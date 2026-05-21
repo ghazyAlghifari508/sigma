@@ -1,6 +1,7 @@
 import React from "react";
 import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
 import Link from "next/link";
+import Image from "next/image";
 
 interface Footer7Props {
   logo?: {
@@ -72,7 +73,7 @@ export const Footer7 = ({
     title: "SIGMA",
   },
   sections = defaultSections,
-  description = "Generasi Anti-Stunting - Platform digital untuk memantau, mendistribusikan, dan mencegah malnutrisi di Indonesia melalui program Makan Bergizi Gratis (MBG).",
+  description = "Strategic Intelligence for Gizi & Mapping Analysis (SIGMA) adalah platform cerdas berbasis AI K-Means Spatial untuk mengoptimalkan penempatan dapur Makan Bergizi Gratis (MBG) dan memantau distribusi logistik secara transparan.",
   socialLinks = defaultSocialLinks,
   copyright = "© 2026 SIGMA. Hak cipta dilindungi. Dipersembahkan oleh Tim Raja Iblis.",
   legalLinks = defaultLegalLinks,
@@ -85,10 +86,7 @@ export const Footer7 = ({
             {/* Logo */}
             <div className="flex items-center gap-2 lg:justify-start">
               <Link href={logo.url} className="flex items-center gap-2">
-                <div className="w-10 h-10 rounded-full bg-[#124f97] flex items-center justify-center text-white shadow-md">
-                  <span className="font-bold text-xl leading-none tracking-tighter">S</span>
-                </div>
-                <h2 className="text-2xl font-bold text-[#124f97] tracking-tight">{logo.title}</h2>
+                <Image src="/logosigma.png" alt="SIGMA Logo" width={140} height={40} className="object-contain mix-blend-multiply" />
               </Link>
             </div>
             <p className="max-w-[85%] lg:max-w-[70%] text-sm text-gray-500 leading-relaxed">

@@ -28,7 +28,7 @@ export default async function SiswaDashboard() {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="bg-white border-hairline shadow-sm rounded-[10px]">
+        <Card className="bg-[#fffbf7] border-hairline shadow-sm rounded-[10px]">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-body">Total Laporan</CardTitle>
             <FileText className="h-4 w-4 text-indigo-600" />
@@ -39,7 +39,7 @@ export default async function SiswaDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="bg-white border-hairline shadow-sm rounded-[10px]">
+        <Card className="bg-[#fffbf7] border-hairline shadow-sm rounded-[10px]">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-body">Laporan Diterima</CardTitle>
             <CheckCircle2 className="h-4 w-4 text-success" />
@@ -50,7 +50,7 @@ export default async function SiswaDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="bg-white border-hairline shadow-sm rounded-[10px]">
+        <Card className="bg-[#fffbf7] border-hairline shadow-sm rounded-[10px]">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-body">Laporan Ditolak</CardTitle>
             <XCircle className="h-4 w-4 text-destructive" />
@@ -65,3 +65,4 @@ export default async function SiswaDashboard() {
     </div>
   );
 }
+

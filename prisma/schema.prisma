@@ -18,9 +18,11 @@ enum Role {
 }
 
 enum StatusDapur {
+  PENDING
   AKTIF
   TIDAK_AKTIF
   MAINTENANCE
+  DITOLAK
 }
 
 enum StatusLaporan {
@@ -98,7 +100,8 @@ model SPPG {
   kecamatan     String
   kabupaten     String
   kapasitasMax  Int           // maks porsi per hari
-  status        StatusDapur   @default(AKTIF)
+  status        StatusDapur   @default(PENDING)
+  alasanPenolakan String?     @db.Text
   tingkatRisiko TingkatRisiko @default(AMAN)
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt

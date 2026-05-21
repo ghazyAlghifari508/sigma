@@ -8,7 +8,7 @@ import { signOut } from "next-auth/react";
 export default function StatusPengajuanPage() {
   return (
     <div className="w-full max-w-lg mx-auto animate-in fade-in zoom-in-95 duration-500">
-      <Card className="bg-white border-hairline shadow-sm relative overflow-hidden rounded-[10px]">
+      <Card className="bg-[#fffbf7] border-hairline shadow-sm relative overflow-hidden rounded-[10px]">
         {/* Accent Top Border */}
         <div className="absolute top-0 left-0 w-full h-1 bg-warning" />
         
@@ -37,7 +37,7 @@ export default function StatusPengajuanPage() {
         <CardFooter className="flex justify-center border-t border-hairline pt-6 pb-6 bg-surface-soft">
           <Button 
             variant="outline" 
-            className="border-hairline bg-white text-ink hover:bg-surface-soft hover:text-ink"
+            className="border-hairline bg-[#fffbf7] text-ink hover:bg-surface-soft hover:text-ink"
             onClick={() => signOut({ callbackUrl: "/login" })}
           >
             <LogOut className="w-4 h-4 mr-2" />
@@ -48,3 +48,4 @@ export default function StatusPengajuanPage() {
     </div>
   );
 }
+

@@ -155,7 +155,7 @@ export default function ScanClient({ initialHistory }: ScanClientProps) {
         {/* Scanner + Result Area */}
         <div className="lg:col-span-6 space-y-6">
           {/* Upload Card */}
-          <Card className="bg-white border-hairline shadow-sm rounded-[10px] overflow-hidden">
+          <Card className="bg-[#fffbf7] border-hairline shadow-sm rounded-[10px] overflow-hidden">
             <CardHeader className="border-b border-hairline pb-4 bg-surface-soft">
               <CardTitle className="text-ink text-lg flex items-center gap-2 font-medium">
                 <Upload className="w-5 h-5 text-indigo-600" />
@@ -168,7 +168,7 @@ export default function ScanClient({ initialHistory }: ScanClientProps) {
                   className="border-2 border-dashed border-hairline hover:border-indigo-400 bg-surface-soft rounded-xl p-8 flex flex-col items-center justify-center text-center cursor-pointer transition-colors"
                   onClick={() => fileInputRef.current?.click()}
                 >
-                  <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm mb-4">
+                  <div className="w-16 h-16 bg-[#fffbf7] rounded-full flex items-center justify-center shadow-sm mb-4">
                     <ImageIcon className="h-8 w-8 text-indigo-400" />
                   </div>
                   <h3 className="text-ink font-medium text-lg mb-1">Pilih Gambar atau Ambil Foto</h3>
@@ -228,7 +228,7 @@ export default function ScanClient({ initialHistory }: ScanClientProps) {
 
           {/* Result Card */}
           {result && (
-            <Card className="bg-white border-hairline shadow-sm rounded-[10px] animate-in zoom-in-95 duration-300">
+            <Card className="bg-[#fffbf7] border-hairline shadow-sm rounded-[10px] animate-in zoom-in-95 duration-300">
               <CardHeader className="border-b border-hairline bg-surface-soft pb-4">
                 <CardTitle className="text-ink text-lg font-medium flex items-center gap-2">
                   <Info className="w-5 h-5 text-indigo-600" />
@@ -281,7 +281,7 @@ export default function ScanClient({ initialHistory }: ScanClientProps) {
 
         {/* History Area */}
         <div className="lg:col-span-6">
-          <Card className="bg-white border-hairline shadow-sm rounded-[10px] h-full">
+          <Card className="bg-[#fffbf7] border-hairline shadow-sm rounded-[10px] h-full">
             <CardHeader className="border-b border-hairline pb-4">
               <CardTitle className="text-ink text-lg flex items-center gap-2 font-medium">
                 <History className="w-5 h-5 text-body" />
@@ -328,3 +328,4 @@ export default function ScanClient({ initialHistory }: ScanClientProps) {
     </div>
   );
 }
+

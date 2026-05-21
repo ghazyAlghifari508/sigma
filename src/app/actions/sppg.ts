@@ -155,3 +155,15 @@ export async function evaluasiLaporanSppg(laporanId: string, tanggapan: string) 
     return { success: false, error: error.message };
   }
 }
+
+export async function getSekolahByLokasiSppg() {
+  const sppg = await getSppgProfile();
+  if (!sppg) return [];
+
+  const sekolah = await prisma.sekolah.findMany({
+    where: { kabupaten: sppg.kabupaten },
+    orderBy: { nama: "asc" },
+  });
+
+  return sekolah;
+}

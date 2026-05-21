@@ -10,7 +10,6 @@ import {
   School,
   Building2,
   Sparkles,
-  AlertTriangle,
   ShieldCheck,
   ShieldAlert,
   Loader2,
@@ -21,7 +20,7 @@ import {
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import type { ComponentType } from "react";
 
 // ─── Tipe Data ──────────────────────────────────────────
@@ -42,6 +41,8 @@ type SppgPoint = {
   provinsi: string;
   kabupaten: string;
   kecamatan: string;
+  status?: string;
+  id?: string;
 };
 
 type RekomenPoint = {
@@ -57,10 +58,10 @@ type PetaMapProps = {
   sppg: SppgPoint[];
   rekomen: RekomenPoint[];
   loading: boolean;
+  focusedLocation?: { lat: number; lng: number } | null;
 };
 
 // Dynamic import peta (Leaflet) — SSR: false wajib untuk react-leaflet
-// @ts-expect-error -- peta-map.tsx ada di direktori yang sama, TS server kadang gagal resolve file baru
 const MapView = dynamic<PetaMapProps>(() => import("./peta-map") as any, {
   ssr: false,
   loading: () => (
@@ -103,6 +104,8 @@ export default function PetaClient() {
     sppg: true,
     rekomen: true,
   });
+  
+  const [focusedLocation, setFocusedLocation] = useState<{lat: number; lng: number} | null>(null);
 
   // Ref untuk tracking apakah stats sudah di-load
   const statsLoaded = useRef(false);
@@ -185,9 +188,9 @@ export default function PetaClient() {
           overflow-hidden
         `}
       >
-        <div className="w-[340px] h-full bg-white/95 backdrop-blur-xl border-r border-hairline shadow-xl flex flex-col">
+        <div className="w-[340px] h-full bg-[#fffbf7]/95 backdrop-blur-xl border-r border-hairline shadow-xl flex flex-col">
           {/* Sidebar Header */}
-          <div className="px-5 py-4 border-b border-hairline bg-white shrink-0">
+          <div className="px-5 py-4 border-b border-hairline bg-[#fffbf7] shrink-0">
             <div className="flex items-center gap-2 mb-1">
               <MapIcon className="h-5 w-5 text-indigo-600" />
               <h2 className="text-lg font-semibold text-ink">Peta Geospasial</h2>
@@ -239,31 +242,10 @@ export default function PetaClient() {
                   value={currentStats.sekolah.toLocaleString("id-ID")}
                 />
                 <StatCard
-                  icon={<Building2 className="w-4 h-4 text-blue-600" />}
-                  label="Dapur SPPG"
-                  value={currentStats.sppg.toLocaleString("id-ID")}
-                />
-                <StatCard
                   icon={<Sparkles className="w-4 h-4 text-purple-600" />}
                   label="Rekomendasi"
                   value={currentStats.rekomen.toLocaleString("id-ID")}
                 />
-                <StatCard
-                  icon={<AlertTriangle className="w-4 h-4 text-red-500" />}
-                  label="Sekolah Bahaya"
-                  value={currentStats.bahaya.toLocaleString("id-ID")}
-                  highlight="red"
-                />
-              </div>
-            </div>
-
-            {/* Breakdown Risiko */}
-            <div>
-              <div className="text-xs font-medium text-body uppercase tracking-wider mb-2">Distribusi Risiko</div>
-              <div className="space-y-2">
-                <RiskBar label="Bahaya" count={currentStats.bahaya} total={currentStats.sekolah} color="bg-red-500" />
-                <RiskBar label="Waspada" count={currentStats.waspada} total={currentStats.sekolah} color="bg-amber-500" />
-                <RiskBar label="Aman" count={currentStats.aman} total={currentStats.sekolah} color="bg-emerald-500" />
               </div>
             </div>
 
@@ -277,15 +259,7 @@ export default function PetaClient() {
                   icon={<School className="w-4 h-4" />}
                   label="Sekolah"
                   sublabel={`${schools.length.toLocaleString("id-ID")} titik`}
-                  colors={["bg-red-500", "bg-amber-500", "bg-emerald-500"]}
-                />
-                <LayerToggle
-                  active={layerVisibility.sppg}
-                  onClick={() => toggleLayer("sppg")}
-                  icon={<Building2 className="w-4 h-4" />}
-                  label="Dapur SPPG"
-                  sublabel={`${sppg.length.toLocaleString("id-ID")} titik`}
-                  colors={["bg-blue-500"]}
+                  colors={["bg-[#124f97]"]}
                 />
                 <LayerToggle
                   active={layerVisibility.rekomen}
@@ -294,6 +268,14 @@ export default function PetaClient() {
                   label="Rekomendasi Baru"
                   sublabel={`${rekomen.length.toLocaleString("id-ID")} titik`}
                   colors={["bg-purple-500"]}
+                />
+                <LayerToggle
+                  active={layerVisibility.sppg}
+                  onClick={() => toggleLayer("sppg")}
+                  icon={<Building2 className="w-4 h-4" />}
+                  label="Dapur SPPG"
+                  sublabel={`${sppg.length.toLocaleString("id-ID")} titik (termasuk pendaftar)`}
+                  colors={["bg-blue-500", "bg-amber-500"]}
                 />
               </div>
             </div>
@@ -319,7 +301,7 @@ export default function PetaClient() {
           absolute z-[1001] top-4 
           ${sidebarOpen ? "left-[348px]" : "left-4"}
           transition-all duration-300 ease-in-out
-          w-8 h-8 rounded-lg bg-white border border-hairline shadow-lg
+          w-8 h-8 rounded-lg bg-[#fffbf7] border border-hairline shadow-lg
           flex items-center justify-center
           hover:bg-surface-soft
         `}
@@ -339,21 +321,16 @@ export default function PetaClient() {
           sppg={layerVisibility.sppg ? sppg : []}
           rekomen={layerVisibility.rekomen ? rekomen : []}
           loading={loading}
+          focusedLocation={focusedLocation}
         />
 
         {/* Badge jumlah titik di pojok kanan bawah */}
         {!loading && (
           <div className="absolute bottom-4 right-4 z-10 flex gap-2">
             {layerVisibility.schools && (
-              <Badge className="bg-white/90 backdrop-blur-sm text-ink border border-hairline shadow-md text-xs px-2.5 py-1 hover:bg-white">
+              <Badge className="bg-[#fffbf7]/90 backdrop-blur-sm text-ink border border-hairline shadow-md text-xs px-2.5 py-1 hover:bg-[#fffbf7]">
                 <School className="w-3 h-3 mr-1.5 text-indigo-600" />
                 {schools.length.toLocaleString("id-ID")} sekolah
-              </Badge>
-            )}
-            {layerVisibility.sppg && (
-              <Badge className="bg-white/90 backdrop-blur-sm text-ink border border-hairline shadow-md text-xs px-2.5 py-1 hover:bg-white">
-                <Building2 className="w-3 h-3 mr-1.5 text-blue-600" />
-                {sppg.length.toLocaleString("id-ID")} SPPG
               </Badge>
             )}
           </div>
@@ -379,7 +356,7 @@ function StatCard({
   return (
     <div
       className={`
-        p-3 rounded-lg border border-hairline bg-white
+        p-3 rounded-lg border border-hairline bg-[#fffbf7]
         ${highlight === "red" ? "ring-1 ring-red-200 bg-red-50/50" : ""}
       `}
     >
@@ -439,7 +416,7 @@ function LayerToggle({
       className={`
         w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-all
         ${active 
-          ? "bg-white border border-hairline shadow-sm" 
+          ? "bg-[#fffbf7] border border-hairline shadow-sm" 
           : "bg-surface-soft/50 border border-transparent opacity-60 hover:opacity-80"
         }
       `}
@@ -462,3 +439,4 @@ function LayerToggle({
     </button>
   );
 }
+

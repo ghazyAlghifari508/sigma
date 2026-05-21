@@ -25,7 +25,7 @@ export default async function SiswaEdukasiPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {edukasi.map((item: any) => (
             <Link key={item.id} href={`/dashboard/siswa/edukasi/${item.id}`} className="group h-full">
-              <Card className="bg-white border-hairline hover:border-indigo-600/50 shadow-sm rounded-[10px] transition-all duration-300 h-full flex flex-col overflow-hidden">
+              <Card className="bg-[#fffbf7] border-hairline hover:border-indigo-600/50 shadow-sm rounded-[10px] transition-all duration-300 h-full flex flex-col overflow-hidden">
                 {item.gambarUrl ? (
                   <div className="h-48 w-full overflow-hidden bg-surface-soft border-b border-hairline">
                     {/* Using standard img to avoid next/image domain config issues for MVP */}
@@ -71,3 +71,4 @@ export default async function SiswaEdukasiPage() {
     </div>
   );
 }
+

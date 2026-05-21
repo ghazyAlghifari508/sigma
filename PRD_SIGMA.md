@@ -41,7 +41,7 @@ Aplikasi ini dikembangkan dalam rangka hackathon **IN:NOVATE – CodeUp! 2026** 
 
 | Role | Deskripsi |
 |---|---|
-| **Siswa** | Penerima manfaat MBG, dapat memantau status distribusi makanan dan melaporkan keluhan |
+| **Siswa** | Penerima manfaat MBG, dapat memantau status distribusi makanan, melaporkan keluhan, dan melakukan scan makanan berbasis AI |
 | **Dapur / SPPG** | Operator dapur MBG, mengelola data distribusi, kapasitas, dan laporan harian |
 | **Pemerintah** | Admin/dinas terkait, melihat rekomendasi AI, peta sebaran dapur, dan analitik makro |
 
@@ -54,12 +54,14 @@ Aplikasi ini dikembangkan dalam rangka hackathon **IN:NOVATE – CodeUp! 2026** 
 - Memberikan peringatan dini (*early warning*) untuk dapur yang berada di zona rawan atau tidak efisien.
 - Menyajikan dasbor monitoring real-time untuk ketiga role pengguna.
 - Membantu pemerintah mengambil keputusan berbasis data (data-driven policy).
+- Memungkinkan siswa memverifikasi kelayakan gizi makanan MBG yang diterima melalui scan foto berbasis AI.
 
 ### 2.2 Success Metrics
 | Metrik | Target |
 |---|---|
 | Akurasi rekomendasi penempatan (radius ≤ 6 km) | ≥ 90% sekolah terlayani |
 | Dapur terdeteksi sebagai rawan dapat diidentifikasi | ≥ 80% dari total outlier |
+| Scan makanan AI memberikan hasil analisis | < 10 detik per scan |
 | Waktu load halaman | < 3 detik |
 | Semua role dapat login & mengakses dashboard | 100% |
 
@@ -79,21 +81,40 @@ Aplikasi ini dikembangkan dalam rangka hackathon **IN:NOVATE – CodeUp! 2026** 
 - Siswa dapat melihat jadwal distribusi makanan.
 - Siswa dapat melaporkan keluhan terkait kualitas/distribusi makanan.
 - Siswa dapat melihat status laporan yang sudah dikirim.
+- Siswa dapat melakukan **scan makanan MBG** dengan mengunggah foto makanan yang diterima.
+  - AI akan menganalisis apakah makanan tersebut bergizi/sehat, kurang layak, atau berbahaya.
+  - Hasil analisis mencakup: kesimpulan status gizi, deskripsi singkat kandungan makanan terdeteksi, dan saran.
+  - Riwayat hasil scan tersimpan dan dapat dilihat kembali oleh siswa.
 
 #### FR-03 · Dashboard Dapur / SPPG
+- Operator dapur dapat mengajukan lokasi dapur baru melalui form pengajuan.
+- Operator dapat melihat status pengajuan lokasi dapur (menunggu / disetujui / ditolak beserta alasan).
+- Operator dapat mengajukan ulang dengan lokasi baru jika pengajuan sebelumnya ditolak.
 - Operator dapur dapat mengelola data distribusi harian (jumlah porsi, sekolah yang dilayani).
 - Operator dapat melihat daftar sekolah dalam radius layanan.
 - Operator dapat melihat notifikasi/peringatan jika kapasitas melebihi batas atau ada keluhan masuk.
 - Operator dapat mengupdate status operasional dapur (aktif/tidak aktif/perbaikan).
 
-#### FR-04 · Dashboard Pemerintah
+#### FR-04 · Pengajuan & Approval Lokasi Dapur
+- Saat SPPG mengajukan lokasi, sistem otomatis menghitung jarak ke sekolah-sekolah terdekat (Haversine) dan mengkategorikan:
+  - **Aman** (hijau) → jarak ke sekolah terdekat **≤ 3 km** → pemerintah dapat langsung menyetujui.
+  - **Sedang** (kuning) → jarak **> 3 km dan ≤ 6 km** → pemerintah dapat menyetujui atau menolak; alasan wajib diisi jika menolak.
+  - **Rawan** (merah) → jarak **> 6 km** → sistem merekomendasikan penolakan; alasan penolakan wajib diisi.
+- Pemerintah melihat daftar pengajuan masuk beserta: kategori otomatis, jarak terdekat ke sekolah, dan pratinjau lokasi di peta mini.
+- Pemerintah dapat **menyetujui** atau **menolak** setiap pengajuan.
+- Alasan wajib diisi saat menolak (untuk kategori Sedang dan Rawan).
+- Dapur yang disetujui → status menjadi `AKTIF`, muncul di peta sebaran, dan SPPG dapat mulai input distribusi.
+- Dapur yang ditolak → status `DITOLAK`, SPPG menerima notifikasi beserta alasan, dan dapat mengajukan ulang dengan lokasi baru.
+
+#### FR-05 · Dashboard Pemerintah
 - Pemerintah dapat melihat peta interaktif sebaran dapur MBG dan sekolah.
+- Pemerintah dapat melihat dan memproses daftar pengajuan lokasi dapur dari SPPG.
 - Pemerintah dapat melihat hasil clustering K-Means dan rekomendasi penempatan dapur baru.
 - Pemerintah dapat melihat daftar dapur yang terindikasi rawan beserta alasannya.
 - Pemerintah dapat melihat analitik makro (total siswa terlayani, rata-rata jarak, distribusi per wilayah).
 - Pemerintah dapat mengunduh laporan dalam format PDF/CSV.
 
-#### FR-05 · Integrasi Machine Learning
+#### FR-06 · Integrasi Machine Learning
 - Sistem mengintegrasikan hasil model K-Means yang sudah tersedia.
 - Rekomendasi ditampilkan secara visual di peta dan dalam bentuk tabel prioritas.
 - Sistem menandai dapur dengan jarak > 6 km sebagai *out-of-range* dan perlu ditinjau.
@@ -121,16 +142,27 @@ Hasil clustering dari model ML ditampilkan sebagai:
 - **Outlier / zona rawan**: dapur yang tidak efisien atau berisiko.
 - **Radius warning**: alert otomatis bila jarak dapur ke sekolah terdekat > 6 km.
 
-### 4.3 Sistem Pelaporan & Keluhan Siswa
+### 4.3 Sistem Pengajuan & Approval Lokasi Dapur
+SPPG mengajukan lokasi dapur baru melalui form (koordinat, nama, kapasitas). Sistem langsung menghitung jarak ke sekolah terdekat dan mengkategorikan lokasi sebagai **Aman** (≤ 3 km), **Sedang** (3–6 km), atau **Rawan** (> 6 km). Pemerintah mereview pengajuan di halaman approval — bisa ACC atau tolak dengan alasan. Keputusan dikirim sebagai notifikasi ke SPPG.
+
+### 4.4 Scan Makanan MBG Berbasis AI
+Siswa dapat mengunggah foto makanan MBG yang mereka terima. Foto dikirim ke model AI via **OpenRouter** (model vision gratis, misal `google/gemini-flash-1.5`). AI menganalisis gambar dan memberikan output:
+- **Status gizi**: Bergizi ✅ / Kurang Layak ⚠️ / Berbahaya ❌
+- **Deskripsi**: Identifikasi komponen makanan yang terdeteksi (nasi, lauk, sayur, dll.)
+- **Saran**: Rekomendasi singkat terkait kelayakan konsumsi
+
+Hasil scan disimpan ke database dan dapat dilihat kembali di riwayat scan siswa. Jika status **Berbahaya**, sistem otomatis menyarankan siswa untuk membuat laporan keluhan.
+
+### 4.5 Sistem Pelaporan & Keluhan Siswa
 Siswa dapat mengajukan keluhan (makanan tidak datang, kualitas buruk, dll.) yang masuk ke dasbor operator dapur dan dapat diteruskan ke pemerintah.
 
-### 4.4 Manajemen Distribusi Harian (SPPG)
+### 4.5 Manajemen Distribusi Harian (SPPG)
 Operator memasukkan data distribusi per hari: jumlah porsi dikirim, sekolah yang dilayani, status operasional. Data ini menjadi input dasbor monitoring pemerintah.
 
-### 4.5 Dasbor Analitik Pemerintah
+### 4.6 Dasbor Analitik Pemerintah
 Visualisasi data makro: total porsi terdistribusi, persentase sekolah terlayani, distribusi per kecamatan/kabupaten, tren mingguan.
 
-### 4.6 Early Warning System
+### 4.7 Early Warning System
 Sistem otomatis memflagging dapur yang:
 - Jaraknya > 6 km dari sekolah yang dilayani.
 - Tidak aktif lebih dari X hari.
@@ -162,21 +194,53 @@ Halaman Login (email + password)
     │
     ├── Lihat info dapur yang melayani sekolahnya
     ├── Lihat jadwal distribusi hari ini
+    │
+    ├── [Scan Makanan AI]
+    │       ├── Upload foto makanan (jpg/png)
+    │       ├── Kirim ke OpenRouter API (model vision)
+    │       ├── Tampilkan hasil: status gizi + deskripsi + saran
+    │       └── Jika Berbahaya → muncul tombol "Laporkan Sekarang"
+    │
     ├── [Buat Laporan Keluhan]
     │       └── Isi form → Submit → Status: "Diterima"
-    └── Lihat riwayat laporan & statusnya
+    │
+    ├── Lihat riwayat laporan & statusnya
+    └── Lihat riwayat scan makanan
 ```
 
 ### 5.3 Flow Dapur / SPPG
 ```
-/dashboard/sppg
+Login sebagai SPPG
     │
-    ├── Overview: kapasitas, sekolah dilayani, status operasional
-    ├── [Input Distribusi Harian]
-    │       └── Pilih sekolah, jumlah porsi, tanggal → Simpan
-    ├── Daftar sekolah dalam radius layanan
-    ├── Notifikasi keluhan masuk dari siswa
-    └── Update status dapur (aktif / tidak aktif / maintenance)
+    ├── [Jika status MENUNGGU_APPROVAL]
+    │       └── Halaman "Pengajuan Sedang Ditinjau"
+    │               ├── Lihat status: Menunggu / Disetujui / Ditolak
+    │               └── Jika Ditolak → lihat alasan → [Ajukan Ulang]
+    │
+    └── [Jika status AKTIF]
+            └── /dashboard/sppg
+                    ├── Overview: kapasitas, sekolah dilayani, status operasional
+                    ├── [Input Distribusi Harian]
+                    │       └── Pilih sekolah, jumlah porsi, tanggal → Simpan
+                    ├── Daftar sekolah dalam radius layanan
+                    ├── Notifikasi keluhan masuk dari siswa
+                    └── Update status dapur (aktif / tidak aktif / maintenance)
+```
+
+### 5.3a Flow Pengajuan Lokasi Dapur (SPPG Baru)
+```
+Register/Login SPPG baru
+    │
+    ▼
+Halaman Pengajuan Lokasi Dapur
+    ├── Isi form: nama dapur, alamat, lat/lng, kapasitas
+    ├── Submit → status: MENUNGGU_APPROVAL
+    │
+    ▼
+Halaman Status Pengajuan (polling / refresh)
+    ├── [MENUNGGU]  → tampilkan spinner + pesan menunggu tinjauan
+    ├── [DISETUJUI] → redirect ke /dashboard/sppg
+    └── [DITOLAK]   → tampilkan alasan → tombol "Ajukan Ulang"
 ```
 
 ### 5.4 Flow Pemerintah
@@ -187,6 +251,14 @@ Halaman Login (email + password)
     │       ├── Layer: Titik Dapur (hijau/kuning/merah)
     │       ├── Layer: Titik Sekolah
     │       └── Layer: Hasil Clustering K-Means
+    │
+    ├── [Approval Pengajuan Dapur] ← FITUR BARU
+    │       ├── Tabel pengajuan masuk (status: MENUNGGU)
+    │       ├── Per baris: nama dapur, lokasi, koordinat, kapasitas
+    │       │             jarak ke sekolah terdekat, badge kategori
+    │       │             (AMAN=hijau / SEDANG=kuning / RAWAN=merah)
+    │       ├── Tombol [Setujui] → dapur langsung AKTIF
+    │       └── Tombol [Tolak]   → modal wajib isi alasan → kirim
     │
     ├── Rekomendasi AI
     │       ├── Lokasi cluster optimal baru
@@ -237,8 +309,9 @@ Halaman Login (email + password)
 | UI Library | shadcn/ui + Tailwind CSS |
 | Auth | NextAuth.js v5 (Credentials Provider) |
 | ORM | Prisma |
-| Database | PostgreSQL |
+| Database | PostgreSQL via **Supabase** (cloud, tanpa Docker) |
 | Peta | Leaflet.js (react-leaflet) |
+| AI Scan Makanan | **OpenRouter API** (model vision gratis, e.g. `google/gemini-flash-1.5`) |
 | ML Integration | Python K-Means hasil disimpan ke DB / endpoint JSON |
 | Validasi | Zod |
 | State Management | React Server Components + Zustand (client state ringan) |
@@ -256,14 +329,18 @@ sigma/
 │   ├── dashboard/
 │   │   ├── siswa/
 │   │   │   ├── page.tsx
+│   │   │   ├── scan/page.tsx             # ← scan makanan AI
 │   │   │   ├── laporan/page.tsx
 │   │   │   └── riwayat/page.tsx
 │   │   ├── sppg/
 │   │   │   ├── page.tsx
+│   │   │   ├── pengajuan/page.tsx        ← BARU
+│   │   │   ├── status-pengajuan/page.tsx ← BARU
 │   │   │   ├── distribusi/page.tsx
 │   │   │   └── keluhan/page.tsx
 │   │   └── pemerintah/
 │   │       ├── page.tsx
+│   │       ├── approval/page.tsx         ← BARU
 │   │       ├── peta/page.tsx
 │   │       ├── rekomendasi/page.tsx
 │   │       └── analitik/page.tsx
@@ -317,6 +394,20 @@ enum StatusDapur {
   AKTIF
   TIDAK_AKTIF
   MAINTENANCE
+  MENUNGGU_APPROVAL  // baru diajukan, belum di-approve pemerintah
+  DITOLAK            // ditolak pemerintah, bisa resubmit
+}
+
+enum StatusPengajuan {
+  MENUNGGU   // belum ditinjau pemerintah
+  DISETUJUI  // acc → dapur jadi AKTIF
+  DITOLAK    // ditolak, alasan wajib diisi
+}
+
+enum KategoriJarak {
+  AMAN    // < 3 km  → rekomen acc
+  SEDANG  // >= 3 km dan <= 6 km → keputusan pemerintah
+  RAWAN   // > 6 km → rekomen tolak
 }
 
 enum StatusLaporan {
@@ -382,25 +473,50 @@ model Sekolah {
 // ─── DAPUR / SPPG ────────────────────────────────────────
 
 model SPPG {
-  id            String      @id @default(cuid())
-  userId        String      @unique
-  user          User        @relation(fields: [userId], references: [id])
+  id            String        @id @default(cuid())
+  userId        String        @unique
+  user          User          @relation(fields: [userId], references: [id])
   namaDapur     String
   alamat        String
   latitude      Float
   longitude     Float
   kecamatan     String
   kabupaten     String
-  kapasitasMax  Int         // maks porsi per hari
-  status        StatusDapur @default(AKTIF)
+  kapasitasMax  Int           // maks porsi per hari
+  status        StatusDapur   @default(MENUNGGU_APPROVAL)
   tingkatRisiko TingkatRisiko @default(AMAN)
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 
   distribusi    Distribusi[]
   sekolah       DapurSekolah[]
   earlyWarning  EarlyWarning[]
   clusterResult ClusterResult?
+  pengajuan     PengajuanDapur[]
+}
+
+// ─── PENGAJUAN LOKASI DAPUR ──────────────────────────────
+
+model PengajuanDapur {
+  id               String          @id @default(cuid())
+  sppgId           String
+  sppg             SPPG            @relation(fields: [sppgId], references: [id])
+  namaDapur        String
+  alamat           String
+  latitude         Float
+  longitude        Float
+  kapasitasMax     Int
+  // Dihitung otomatis oleh sistem saat pengajuan masuk
+  jarakKeSekolahKm Float?          // jarak ke sekolah terdekat (Haversine)
+  kategoriJarak    KategoriJarak?  // AMAN / SEDANG / RAWAN
+  sekolahTerdekat  String?         // nama sekolah terdekat (info display)
+  // Keputusan pemerintah
+  status           StatusPengajuan @default(MENUNGGU)
+  alasanPenolakan  String?         // wajib diisi jika DITOLAK
+  ditinjauOleh     String?         // nama/id pejabat yang approve/tolak
+  ditinjauAt       DateTime?
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
 }
 
 // ─── RELASI DAPUR ↔ SEKOLAH (many-to-many) ──────────────
@@ -444,6 +560,26 @@ model Laporan {
   status      StatusLaporan @default(DITERIMA)
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
+}
+
+// ─── SCAN MAKANAN AI ─────────────────────────────────────
+
+enum StatusGizi {
+  BERGIZI     // makanan layak dan bergizi
+  KURANG_LAYAK // makanan kurang memenuhi standar gizi
+  BERBAHAYA   // makanan terindikasi tidak aman dikonsumsi
+}
+
+model ScanMakanan {
+  id           String      @id @default(cuid())
+  siswaId      String
+  siswa        Siswa       @relation(fields: [siswaId], references: [id])
+  fotoUrl      String      // URL foto yang diupload (Supabase Storage)
+  statusGizi   StatusGizi  // hasil analisis AI
+  deskripsi    String      // narasi komponen makanan yang terdeteksi AI
+  saran        String      // saran dari AI
+  modelUsed    String      @default("google/gemini-flash-1.5") // model OpenRouter
+  createdAt    DateTime    @default(now())
 }
 
 // ─── EARLY WARNING ───────────────────────────────────────
@@ -507,6 +643,8 @@ model RekomendasiLokasi {
 | Aspek | Ketentuan |
 |---|---|
 | Radius maksimal dapur–sekolah | **≤ 6 km** (hardcoded sebagai konstanta `MAX_RADIUS_KM = 6`) |
+| Kategori jarak approval | `AMAN` < 3 km · `SEDANG` ≥ 3 km & ≤ 6 km · `RAWAN` > 6 km (konstanta `RADIUS_AMAN = 3`, `RADIUS_MAX = 6`) |
+| Alasan penolakan | Wajib diisi (minimal 10 karakter) saat pemerintah menolak pengajuan |
 | Auth | NextAuth.js Credentials Provider, password bcrypt, session JWT |
 | Role guard | Middleware Next.js wajib mem-protect semua route `/dashboard/*` |
 | ML integration | Model K-Means sudah tersedia; integrasi melalui endpoint internal atau import JSON hasil prediksi |
@@ -610,7 +748,13 @@ Aplikasi dikerjakan dalam format hackathon 24 jam (21–22 Mei 2026). Prioritas 
 **Tujuan:** Membangun tampilan lengkap dashboard SPPG, **tanpa integrasi backend**.
 
 **Halaman yang dibuat:**
-- `/dashboard/sppg` — Halaman utama
+- `/dashboard/sppg/pengajuan` — Form pengajuan lokasi dapur baru
+  - Input: nama dapur, alamat, latitude, longitude, kapasitas maksimal
+  - Tombol submit
+- `/dashboard/sppg/status-pengajuan` — Status pengajuan yang sudah dikirim
+  - Badge status besar: MENUNGGU (abu) / DISETUJUI (hijau) / DITOLAK (merah)
+  - Jika DITOLAK: tampilkan alasan penolakan dari pemerintah + tombol "Ajukan Ulang"
+- `/dashboard/sppg` — Halaman utama *(hanya tampil jika status AKTIF)*
   - Card: nama dapur, status operasional, kapasitas hari ini, jumlah sekolah dilayani
   - Badge tingkat risiko (Aman / Waspada / Rawan)
   - Daftar sekolah dalam jangkauan (tabel)
@@ -623,6 +767,7 @@ Aplikasi dikerjakan dalam format hackathon 24 jam (21–22 Mei 2026). Prioritas 
 
 **Checklist:**
 - [ ] Layout sidebar navigasi SPPG
+- [ ] Middleware/guard: jika status `MENUNGGU_APPROVAL` atau `DITOLAK`, redirect ke `/dashboard/sppg/status-pengajuan`
 - [ ] Semua data **dummy/statis**
 - [ ] Komponen badge status menggunakan warna merah/kuning/hijau
 
@@ -636,8 +781,14 @@ Aplikasi dikerjakan dalam format hackathon 24 jam (21–22 Mei 2026). Prioritas 
 
 **Halaman yang dibuat:**
 - `/dashboard/pemerintah` — Halaman utama (analitik makro)
-  - Summary cards: total dapur aktif, total sekolah terlayani, total porsi hari ini, dapur rawan
+  - Summary cards: total dapur aktif, total sekolah terlayani, total porsi hari ini, dapur rawan, **pengajuan menunggu (badge notif)**
   - Grafik sederhana (bar chart): distribusi per kecamatan
+- `/dashboard/pemerintah/approval` — Manajemen pengajuan lokasi dapur ← **BARU**
+  - Tabel pengajuan masuk: nama dapur, operator, lokasi, kapasitas, jarak ke sekolah terdekat
+  - Badge kategori jarak: AMAN (hijau) / SEDANG (kuning) / RAWAN (merah)
+  - Tombol [Setujui] dan [Tolak] per baris
+  - Modal konfirmasi tolak: textarea alasan (required)
+  - Tab: Menunggu / Disetujui / Ditolak (riwayat keputusan)
 - `/dashboard/pemerintah/peta` — Peta interaktif
   - Leaflet map dengan marker dummy dapur (hijau/merah) dan sekolah (biru)
   - Popup info saat marker diklik
@@ -691,6 +842,8 @@ Aplikasi dikerjakan dalam format hackathon 24 jam (21–22 Mei 2026). Prioritas 
 
 *SPPG:*
 - [ ] `GET /api/sppg/profile` — profil dan status dapur
+- [ ] `POST /api/sppg/pengajuan` — kirim pengajuan lokasi dapur baru (otomatis hitung jarak + kategori)
+- [ ] `GET /api/sppg/pengajuan` — cek status pengajuan terbaru
 - [ ] `GET /api/sppg/sekolah` — daftar sekolah dalam radius
 - [ ] `POST /api/sppg/distribusi` — input distribusi harian
 - [ ] `GET /api/sppg/distribusi` — histori distribusi
@@ -699,9 +852,12 @@ Aplikasi dikerjakan dalam format hackathon 24 jam (21–22 Mei 2026). Prioritas 
 - [ ] `PATCH /api/sppg/status` — update status operasional dapur
 
 *Pemerintah:*
-- [ ] `GET /api/pemerintah/summary` — statistik makro
+- [ ] `GET /api/pemerintah/summary` — statistik makro (+ jumlah pengajuan menunggu)
 - [ ] `GET /api/pemerintah/dapur` — semua data dapur (untuk peta)
 - [ ] `GET /api/pemerintah/sekolah` — semua data sekolah (untuk peta)
+- [ ] `GET /api/pemerintah/pengajuan` — daftar pengajuan (filter: status)
+- [ ] `PATCH /api/pemerintah/pengajuan/[id]/approve` — setujui pengajuan → update SPPG status jadi `AKTIF`
+- [ ] `PATCH /api/pemerintah/pengajuan/[id]/reject` — tolak pengajuan (body: `{ alasan: string }`) → update SPPG status jadi `DITOLAK`
 - [ ] `GET /api/pemerintah/rekomendasi` — rekomendasi lokasi dari DB
 - [ ] `GET /api/pemerintah/early-warning` — daftar dapur bermasalah
 - [ ] `GET /api/pemerintah/analitik` — data tren distribusi

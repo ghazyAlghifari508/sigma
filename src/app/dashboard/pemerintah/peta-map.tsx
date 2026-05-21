@@ -21,6 +21,8 @@ type SppgPoint = {
   provinsi: string;
   kabupaten: string;
   kecamatan: string;
+  status?: string;
+  id?: string;
 };
 
 type RekomenPoint = {
@@ -35,6 +37,7 @@ type PetaMapProps = {
   sppg: SppgPoint[];
   rekomen: RekomenPoint[];
   loading: boolean;
+  focusedLocation?: { lat: number; lng: number } | null;
 };
 
 // ─── Warna risiko ───────────────────────────────────────
@@ -46,8 +49,9 @@ const RISK_COLORS: Record<string, string> = {
 
 const SPPG_COLOR = "#3b82f6";
 const REKOMEN_COLOR = "#a855f7";
+const PENDING_COLOR = "#f59e0b"; // Orange untuk SPPG yang butuh verifikasi
 
-export default function PetaMap({ schools, sppg, rekomen, loading }: PetaMapProps) {
+export default function PetaMap({ schools, sppg, rekomen, loading, focusedLocation }: PetaMapProps) {
   const mapRef = useRef<L.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const schoolLayerRef = useRef<L.LayerGroup | null>(null);
@@ -100,7 +104,7 @@ export default function PetaMap({ schools, sppg, rekomen, loading }: PetaMapProp
 
     for (let i = 0; i < schools.length; i++) {
       const s = schools[i];
-      const color = RISK_COLORS[s.risk_label] || "#6b7280";
+      const color = "#124f97"; // Warna seragam SIGMA untuk semua sekolah
 
       const marker = L.circleMarker([s.lat, s.lng], {
         renderer,
@@ -113,21 +117,12 @@ export default function PetaMap({ schools, sppg, rekomen, loading }: PetaMapProp
       });
 
       marker.bindPopup(() => {
-        const riskBadge =
-          s.risk_label === "Bahaya"
-            ? '<span style="background:#fef2f2;color:#dc2626;padding:2px 8px;border-radius:9999px;font-size:11px;font-weight:600;">⚠ Bahaya</span>'
-            : s.risk_label === "Waspada"
-              ? '<span style="background:#fffbeb;color:#d97706;padding:2px 8px;border-radius:9999px;font-size:11px;font-weight:600;">⚡ Waspada</span>'
-              : '<span style="background:#f0fdf4;color:#16a34a;padding:2px 8px;border-radius:9999px;font-size:11px;font-weight:600;">✓ Aman</span>';
-
         return `
           <div style="font-family:system-ui;min-width:200px;">
             <div style="font-weight:700;font-size:13px;margin-bottom:6px;color:#181d26;">${s.name}</div>
-            <div style="margin-bottom:8px;">${riskBadge}</div>
             <table style="font-size:12px;color:#41454d;width:100%;border-collapse:collapse;">
               <tr><td style="padding:2px 0;">Provinsi</td><td style="text-align:right;font-weight:500;color:#181d26;">${s.province}</td></tr>
               <tr><td style="padding:2px 0;">Jenjang</td><td style="text-align:right;font-weight:500;color:#181d26;">${s.stage}</td></tr>
-              <tr><td style="padding:2px 0;">Jarak ke SPPG</td><td style="text-align:right;font-weight:500;color:#181d26;">${s.dist_km.toFixed(1)} km</td></tr>
             </table>
           </div>
         `;
@@ -137,7 +132,7 @@ export default function PetaMap({ schools, sppg, rekomen, loading }: PetaMapProp
     }
   }, [schools]);
 
-  // Update layer SPPG
+  // Update layer SPPG (termasuk pendaftar baru)
   useEffect(() => {
     const layer = sppgLayerRef.current;
     const renderer = canvasRendererRef.current;
@@ -147,14 +142,15 @@ export default function PetaMap({ schools, sppg, rekomen, loading }: PetaMapProp
 
     for (let i = 0; i < sppg.length; i++) {
       const s = sppg[i];
+      const isPending = s.status === "PENDING";
+      const color = isPending ? PENDING_COLOR : SPPG_COLOR;
 
-      // Marker kotak (square) — pakai circleMarker dengan style tebal
       const marker = L.circleMarker([s.lat, s.lng], {
         renderer,
-        radius: 4,
-        fillColor: SPPG_COLOR,
-        fillOpacity: 0.8,
-        color: "#1e40af",
+        radius: isPending ? 8 : 5,
+        fillColor: color,
+        fillOpacity: isPending ? 0.9 : 0.7,
+        color: "#ffffff",
         weight: 1.5,
         opacity: 1,
       });
@@ -162,20 +158,31 @@ export default function PetaMap({ schools, sppg, rekomen, loading }: PetaMapProp
       marker.bindPopup(() => {
         return `
           <div style="font-family:system-ui;min-width:200px;">
-            <div style="font-weight:700;font-size:13px;margin-bottom:4px;color:#181d26;">🏭 Dapur SPPG</div>
-            <div style="font-size:11px;color:#41454d;margin-bottom:8px;line-height:1.4;">${s.nama_sppg}</div>
+            <div style="font-weight:700;font-size:13px;margin-bottom:6px;color:#181d26;">
+              ${isPending ? "🚨 PENDAFTAR BARU: " : "🍽️ SPPG: "} ${s.nama_sppg}
+            </div>
             <table style="font-size:12px;color:#41454d;width:100%;border-collapse:collapse;">
               <tr><td style="padding:2px 0;">Provinsi</td><td style="text-align:right;font-weight:500;color:#181d26;">${s.provinsi}</td></tr>
               <tr><td style="padding:2px 0;">Kabupaten</td><td style="text-align:right;font-weight:500;color:#181d26;">${s.kabupaten}</td></tr>
-              <tr><td style="padding:2px 0;">Kecamatan</td><td style="text-align:right;font-weight:500;color:#181d26;">${s.kecamatan}</td></tr>
+              <tr><td style="padding:2px 0;">Status</td><td style="text-align:right;font-weight:500;color:${isPending ? '#f59e0b' : '#3b82f6'};">${s.status || "AKTIF"}</td></tr>
             </table>
           </div>
         `;
-      }, { maxWidth: 300 });
+      }, { maxWidth: 280 });
 
       marker.addTo(layer);
     }
   }, [sppg]);
+
+  // Efek FlyTo jika ada focusedLocation
+  useEffect(() => {
+    if (mapRef.current && focusedLocation) {
+      mapRef.current.flyTo([focusedLocation.lat, focusedLocation.lng], 14, {
+        animate: true,
+        duration: 1.5
+      });
+    }
+  }, [focusedLocation]);
 
   // Update layer rekomendasi
   useEffect(() => {
@@ -220,8 +227,8 @@ export default function PetaMap({ schools, sppg, rekomen, loading }: PetaMapProp
 
       {/* Overlay loading */}
       {loading && (
-        <div className="absolute inset-0 bg-white/40 backdrop-blur-sm flex items-center justify-center z-10 pointer-events-none">
-          <div className="bg-white rounded-xl px-6 py-4 shadow-lg border border-hairline flex items-center gap-3">
+        <div className="absolute inset-0 bg-[#fffbf7]/40 backdrop-blur-sm flex items-center justify-center z-10 pointer-events-none">
+          <div className="bg-[#fffbf7] rounded-xl px-6 py-4 shadow-lg border border-hairline flex items-center gap-3">
             <div className="w-5 h-5 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
             <span className="text-sm text-ink font-medium">Memuat titik data...</span>
           </div>
@@ -279,3 +286,4 @@ export default function PetaMap({ schools, sppg, rekomen, loading }: PetaMapProp
     </div>
   );
 }
+

@@ -45,7 +45,7 @@ export default async function RiwayatLaporanPage() {
         </div>
       </div>
 
-      <Card className="bg-white border-hairline shadow-sm rounded-[10px]">
+      <Card className="bg-[#fffbf7] border-hairline shadow-sm rounded-[10px]">
         <CardHeader className="border-b border-hairline/50 pb-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <CardTitle className="text-lg font-medium text-ink">Daftar Laporan</CardTitle>
@@ -57,10 +57,6 @@ export default async function RiwayatLaporanPage() {
                   className="pl-9 bg-surface-soft border-hairline text-ink focus-visible:ring-indigo-600 h-9"
                 />
               </div>
-              <Button variant="outline" size="sm" className="h-9 border-hairline bg-surface-soft text-body hover:text-ink hover:bg-surface-soft/80">
-                <Filter className="h-4 w-4 mr-2" />
-                Filter
-              </Button>
             </div>
           </div>
         </CardHeader>
@@ -115,3 +111,4 @@ export default async function RiwayatLaporanPage() {
     </div>
   );
 }
+

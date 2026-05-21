@@ -72,7 +72,7 @@ export async function getRiwayatLaporan() {
 /**
  * Mengirim Keluhan/Laporan baru
  */
-export async function submitLaporan(data: { judul: string; isi: string; kategori: string }) {
+export async function submitLaporan(data: { sppgId?: string; judul: string; isi: string; kategori: string }) {
   const session = await auth();
   if (!session || session.user.role !== "SISWA") {
     return { success: false, error: "Unauthorized" };
@@ -85,6 +85,7 @@ export async function submitLaporan(data: { judul: string; isi: string; kategori
     await prisma.laporan.create({
       data: {
         siswaId: profile.id,
+        sppgId: data.sppgId || null, 
         judul: data.judul,
         isi: data.isi,
         kategori: data.kategori,
