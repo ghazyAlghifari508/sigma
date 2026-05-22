@@ -127,21 +127,19 @@ export default function PetaClient() {
     const query = province !== "Semua" ? `?province=${encodeURIComponent(province)}` : "";
 
     try {
-      const [schoolsRes, sppgRes, rekomenRes] = await Promise.all([
+      const [schoolsRes, rekomenRes] = await Promise.all([
         fetch(`/api/pemerintah/geojson/schools${query}`),
-        fetch(`/api/pemerintah/geojson/sppg${query}`),
         fetch(`/api/pemerintah/geojson/rekomen${query}`),
       ]);
 
-      const [schoolsData, sppgData, rekomenData] = await Promise.all([
+      const [schoolsData, rekomenData] = await Promise.all([
         schoolsRes.json(),
-        sppgRes.json(),
         rekomenRes.json(),
       ]);
 
       setSchools(schoolsData);
-      setSppg(sppgData);
       setRekomen(rekomenData);
+      setSppg([]); // Reset SPPG
     } catch (err) {
       console.error("Gagal memuat data peta:", err);
     } finally {
@@ -269,14 +267,6 @@ export default function PetaClient() {
                   sublabel={`${rekomen.length.toLocaleString("id-ID")} titik`}
                   colors={["bg-purple-500"]}
                 />
-                <LayerToggle
-                  active={layerVisibility.sppg}
-                  onClick={() => toggleLayer("sppg")}
-                  icon={<Building2 className="w-4 h-4" />}
-                  label="Dapur SPPG"
-                  sublabel={`${sppg.length.toLocaleString("id-ID")} titik (termasuk pendaftar)`}
-                  colors={["bg-blue-500", "bg-amber-500"]}
-                />
               </div>
             </div>
 
@@ -318,7 +308,7 @@ export default function PetaClient() {
       <div className="flex-1 h-full relative">
         <MapView
           schools={layerVisibility.schools ? schools : []}
-          sppg={layerVisibility.sppg ? sppg : []}
+          sppg={[]}
           rekomen={layerVisibility.rekomen ? rekomen : []}
           loading={loading}
           focusedLocation={focusedLocation}

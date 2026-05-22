@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CalendarIcon, ChevronRight } from "lucide-react";
+import { SafeImage } from "@/components/ui/safe-image";
 
 export default async function SiswaEdukasiPage() {
   const result = await getEdukasiPublished();
@@ -27,12 +28,16 @@ export default async function SiswaEdukasiPage() {
             <Link key={item.id} href={`/dashboard/siswa/edukasi/${item.id}`} className="group h-full">
               <Card className="bg-[#fffbf7] border-hairline hover:border-indigo-600/50 shadow-sm rounded-[10px] transition-all duration-300 h-full flex flex-col overflow-hidden">
                 {item.gambarUrl ? (
-                  <div className="h-48 w-full overflow-hidden bg-surface-soft border-b border-hairline">
-                    {/* Using standard img to avoid next/image domain config issues for MVP */}
-                    <img 
+                  <div className="h-48 w-full overflow-hidden bg-surface-soft border-b border-hairline relative">
+                    <SafeImage 
                       src={item.gambarUrl} 
                       alt={item.judul} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      fallbackElement={
+                        <div className="h-48 w-full bg-gradient-to-br from-indigo-100 to-indigo-50 flex items-center justify-center">
+                          <span className="text-indigo-300 text-4xl font-normal tracking-tight">SIGMA</span>
+                        </div>
+                      }
                     />
                   </div>
                 ) : (

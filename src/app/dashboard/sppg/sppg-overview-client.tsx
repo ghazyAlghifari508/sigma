@@ -6,9 +6,11 @@ import { Building2, Plus, MapIcon, Loader2, CheckCircle2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { assignSekolahToSppg } from "@/app/actions/sppg";
+import { toast } from "sonner";
 
 // Kita akan buat komponen peta sederhana nanti
-const MapView = dynamic<{ sppg: any; sekolah: any[] }>(() => import("./sppg-map"), {
+const MapView = dynamic<{ sppg: any; sekolahSasaran: any[]; sekolahTersedia: any[] }>(() => import("./sppg-map"), {
   ssr: false,
   loading: () => (
     <div className="w-full h-[400px] flex flex-col items-center justify-center bg-[#fffbf7] border border-gray-100 rounded-2xl animate-pulse">
@@ -28,15 +30,24 @@ export default function SppgOverviewClient({ sppg, sekolahSasaran, sekolahTersed
   const [isAdding, setIsAdding] = useState(false);
   const [selectedSekolah, setSelectedSekolah] = useState("");
   
-  const handleAddSchool = (e: React.FormEvent) => {
+  const handleAddSchool = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedSekolah) return;
     setIsAdding(true);
-    // Simulasi penambahan sekolah
-    setTimeout(() => {
+    
+    try {
+      const res = await assignSekolahToSppg(selectedSekolah);
+      if (res.success) {
+        toast.success("Sekolah berhasil ditambahkan ke layanan Dapur Anda!");
+        setSelectedSekolah(""); // Reset pilihan
+      } else {
+        toast.error(res.error || "Gagal menambahkan sekolah.");
+      }
+    } catch (error: any) {
+      toast.error("Terjadi kesalahan jaringan.");
+    } finally {
       setIsAdding(false);
-      alert("Permintaan penambahan sekolah berhasil dikirim! Menunggu konfirmasi.");
-    }, 1000);
+    }
   };
 
   return (
@@ -148,9 +159,13 @@ export default function SppgOverviewClient({ sppg, sekolahSasaran, sekolahTersed
               <div className="w-3 h-3 rounded-full bg-[#124f97]"></div>
               <span className="text-xs font-medium">Sekolah Dilayani</span>
             </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-gray-400"></div>
+              <span className="text-xs font-medium">Sekolah Tersedia</span>
+            </div>
           </div>
         </div>
-        <MapView sppg={sppg} sekolah={sekolahSasaran} />
+        <MapView sppg={sppg} sekolahSasaran={sekolahSasaran} sekolahTersedia={sekolahTersedia} />
       </div>
 
     </div>

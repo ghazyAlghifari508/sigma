@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/componen
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, CalendarIcon } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import { SafeImage } from "@/components/ui/safe-image";
 
 export default async function SiswaEdukasiDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
@@ -32,11 +33,16 @@ export default async function SiswaEdukasiDetailPage({ params }: { params: Promi
 
       <Card className="bg-[#fffbf7] border-hairline shadow-sm rounded-[12px] overflow-hidden">
         {edukasi.gambarUrl ? (
-          <div className="w-full h-64 md:h-[400px] overflow-hidden bg-surface-soft relative">
-            <img 
+          <div className="w-full h-64 md:h-[400px] overflow-hidden bg-surface-soft relative border-b border-hairline">
+            <SafeImage 
               src={edukasi.gambarUrl} 
               alt={edukasi.judul} 
               className="w-full h-full object-cover"
+              fallbackElement={
+                <div className="w-full h-full bg-gradient-to-br from-indigo-100 to-indigo-50 flex items-center justify-center">
+                   <span className="text-indigo-300 text-4xl font-medium tracking-tight">SIGMA Edukasi</span>
+                </div>
+              }
             />
           </div>
         ) : (

@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-export default function SppgMap({ sppg, sekolah }: { sppg: any, sekolah: any[] }) {
+export default function SppgMap({ sppg, sekolahSasaran, sekolahTersedia }: { sppg: any, sekolahSasaran: any[], sekolahTersedia: any[] }) {
   const mapRef = useRef<L.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
 
@@ -33,11 +33,31 @@ export default function SppgMap({ sppg, sekolah }: { sppg: any, sekolah: any[] }
       weight: 2,
     }).bindPopup(`<b>${sppg.namaDapur}</b><br>Dapur Anda`).addTo(map);
 
-    // Marker Sekolah
+    // Marker Sekolah Tersedia (belum dilayani)
     const bounds = L.latLngBounds([[sppg.latitude, sppg.longitude]]);
     
-    sekolah.forEach((s) => {
-      const lat = s.latitude || s.lat; // menyesuaikan field name dari db/api
+    sekolahTersedia?.forEach((s) => {
+      const lat = s.latitude || s.lat; 
+      const lng = s.longitude || s.lng;
+      if (!lat || !lng) return;
+      
+      bounds.extend([lat, lng]);
+      
+      // Jika sekolah ini sudah ada di sekolahSasaran, lewati agar tidak dobel
+      if (sekolahSasaran?.some(ss => ss.id === s.id)) return;
+
+      L.circleMarker([lat, lng], {
+        radius: 5,
+        fillColor: "#9ca3af", // Abu-abu
+        fillOpacity: 0.6,
+        color: "#ffffff",
+        weight: 1,
+      }).bindPopup(`<b>${s.nama || s.name}</b><br>Tersedia (${s.jarakKm} km)<br>Belum Dilayani`).addTo(map);
+    });
+
+    // Marker Sekolah Dilayani (Sasaran)
+    sekolahSasaran?.forEach((s) => {
+      const lat = s.latitude || s.lat;
       const lng = s.longitude || s.lng;
       if (!lat || !lng) return;
       
@@ -45,14 +65,14 @@ export default function SppgMap({ sppg, sekolah }: { sppg: any, sekolah: any[] }
       
       L.circleMarker([lat, lng], {
         radius: 6,
-        fillColor: "#124f97",
-        fillOpacity: 0.8,
+        fillColor: "#124f97", // Biru SIGMA
+        fillOpacity: 0.9,
         color: "#ffffff",
         weight: 1.5,
-      }).bindPopup(`<b>${s.nama || s.name}</b><br>Sekolah Dilayani`).addTo(map);
+      }).bindPopup(`<b>${s.nama || s.name}</b><br>✅ Sekolah Dilayani`).addTo(map);
     });
 
-    if (sekolah.length > 0) {
+    if (sekolahTersedia?.length > 0 || sekolahSasaran?.length > 0) {
       map.fitBounds(bounds, { padding: [50, 50] });
     }
 
@@ -62,7 +82,7 @@ export default function SppgMap({ sppg, sekolah }: { sppg: any, sekolah: any[] }
       map.remove();
       mapRef.current = null;
     };
-  }, [sppg, sekolah]);
+  }, [sppg, sekolahSasaran, sekolahTersedia]);
 
   return (
     <div className="w-full h-full relative">
