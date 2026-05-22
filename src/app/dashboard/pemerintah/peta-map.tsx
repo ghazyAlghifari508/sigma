@@ -3,6 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import "leaflet.markercluster";
+import "leaflet.markercluster/dist/MarkerCluster.css";
+import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 
 type SchoolPoint = {
   lng: number;
@@ -34,7 +37,6 @@ type RekomenPoint = {
 
 type PetaMapProps = {
   schools: SchoolPoint[];
-  sppg: SppgPoint[];
   rekomen: RekomenPoint[];
   loading: boolean;
   focusedLocation?: { lat: number; lng: number } | null;
@@ -51,11 +53,10 @@ const SPPG_COLOR = "#3b82f6";
 const REKOMEN_COLOR = "#a855f7";
 const PENDING_COLOR = "#f59e0b"; // Orange untuk SPPG yang butuh verifikasi
 
-export default function PetaMap({ schools, sppg, rekomen, loading, focusedLocation }: PetaMapProps) {
+export default function PetaMap({ schools, rekomen, loading, focusedLocation }: PetaMapProps) {
   const mapRef = useRef<L.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const schoolLayerRef = useRef<L.LayerGroup | null>(null);
-  const sppgLayerRef = useRef<L.LayerGroup | null>(null);
   const rekomenLayerRef = useRef<L.LayerGroup | null>(null);
   const canvasRendererRef = useRef<L.Canvas | null>(null);
 
@@ -69,6 +70,7 @@ export default function PetaMap({ schools, sppg, rekomen, loading, focusedLocati
     const map = L.map(mapContainerRef.current, {
       center: [-2.5, 118],
       zoom: 5,
+      maxZoom: 19,
       zoomControl: false,
       preferCanvas: true,
     });
@@ -83,8 +85,13 @@ export default function PetaMap({ schools, sppg, rekomen, loading, focusedLocati
 
     // Buat layer group kosong — urutan penting: yang terakhir = paling atas
     rekomenLayerRef.current = L.layerGroup().addTo(map);
-    sppgLayerRef.current = L.layerGroup().addTo(map);
-    schoolLayerRef.current = L.layerGroup().addTo(map);
+    
+    // Gunakan MarkerCluster untuk Sekolah untuk optimasi performa massal
+    schoolLayerRef.current = (L as any).markerClusterGroup({
+      chunkedLoading: true,
+      maxClusterRadius: 50,
+      disableClusteringAtZoom: 14, // Tampilkan titik asli pada zoom tinggi
+    }).addTo(map);
 
     mapRef.current = map;
 
@@ -94,14 +101,14 @@ export default function PetaMap({ schools, sppg, rekomen, loading, focusedLocati
     };
   }, []);
 
-  // Update layer sekolah
   useEffect(() => {
     const layer = schoolLayerRef.current;
     const renderer = canvasRendererRef.current;
-    if (!layer || !renderer) return;
+    if (!layer || !renderer || !mapRef.current) return;
 
     layer.clearLayers();
 
+    const markers: L.CircleMarker[] = [];
     for (let i = 0; i < schools.length; i++) {
       const s = schools[i];
       const color = "#124f97"; // Warna seragam SIGMA untuk semua sekolah
@@ -128,51 +135,12 @@ export default function PetaMap({ schools, sppg, rekomen, loading, focusedLocati
         `;
       }, { maxWidth: 280 });
 
-      marker.addTo(layer);
+      markers.push(marker);
     }
+    
+    // addLayers (jamak) penting untuk MarkerClusterGroup
+    (layer as any).addLayers(markers);
   }, [schools]);
-
-  // Update layer SPPG (termasuk pendaftar baru)
-  useEffect(() => {
-    const layer = sppgLayerRef.current;
-    const renderer = canvasRendererRef.current;
-    if (!layer || !renderer) return;
-
-    layer.clearLayers();
-
-    for (let i = 0; i < sppg.length; i++) {
-      const s = sppg[i];
-      const isPending = s.status === "PENDING";
-      const color = isPending ? PENDING_COLOR : SPPG_COLOR;
-
-      const marker = L.circleMarker([s.lat, s.lng], {
-        renderer,
-        radius: isPending ? 8 : 5,
-        fillColor: color,
-        fillOpacity: isPending ? 0.9 : 0.7,
-        color: "#ffffff",
-        weight: 1.5,
-        opacity: 1,
-      });
-
-      marker.bindPopup(() => {
-        return `
-          <div style="font-family:system-ui;min-width:200px;">
-            <div style="font-weight:700;font-size:13px;margin-bottom:6px;color:#181d26;">
-              ${isPending ? "🚨 PENDAFTAR BARU: " : "🍽️ SPPG: "} ${s.nama_sppg}
-            </div>
-            <table style="font-size:12px;color:#41454d;width:100%;border-collapse:collapse;">
-              <tr><td style="padding:2px 0;">Provinsi</td><td style="text-align:right;font-weight:500;color:#181d26;">${s.provinsi}</td></tr>
-              <tr><td style="padding:2px 0;">Kabupaten</td><td style="text-align:right;font-weight:500;color:#181d26;">${s.kabupaten}</td></tr>
-              <tr><td style="padding:2px 0;">Status</td><td style="text-align:right;font-weight:500;color:${isPending ? '#f59e0b' : '#3b82f6'};">${s.status || "AKTIF"}</td></tr>
-            </table>
-          </div>
-        `;
-      }, { maxWidth: 280 });
-
-      marker.addTo(layer);
-    }
-  }, [sppg]);
 
   // Efek FlyTo jika ada focusedLocation
   useEffect(() => {
@@ -184,11 +152,10 @@ export default function PetaMap({ schools, sppg, rekomen, loading, focusedLocati
     }
   }, [focusedLocation]);
 
-  // Update layer rekomendasi
   useEffect(() => {
     const layer = rekomenLayerRef.current;
     const renderer = canvasRendererRef.current;
-    if (!layer || !renderer) return;
+    if (!layer || !renderer || !mapRef.current) return;
 
     layer.clearLayers();
 

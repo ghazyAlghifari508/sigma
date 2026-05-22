@@ -167,3 +167,43 @@ export async function getSekolahByLokasiSppg() {
 
   return sekolah;
 }
+
+export async function assignSekolahToSppg(sekolahId: string) {
+  const session = await auth();
+  if (!session || session.user.role !== "SPPG") return { success: false, error: "Unauthorized" };
+
+  const sppg = await getSppgProfile();
+  if (!sppg) return { success: false, error: "SPPG profile not found" };
+
+  try {
+    const sekolah = await prisma.sekolah.findUnique({ where: { id: sekolahId } });
+    if (!sekolah) return { success: false, error: "Sekolah tidak ditemukan" };
+
+    // Cek apakah sudah di-assign ke SPPG ini
+    const existing = await prisma.dapurSekolah.findFirst({
+      where: { sppgId: sppg.id, sekolahId }
+    });
+    
+    if (existing) {
+      return { success: false, error: "Sekolah sudah dilayani oleh dapur Anda." };
+    }
+
+    const jarakHitung = calculateDistance(
+      sppg.latitude, sppg.longitude,
+      sekolah.latitude, sekolah.longitude
+    );
+
+    await prisma.dapurSekolah.create({
+      data: {
+        sppgId: sppg.id,
+        sekolahId: sekolahId,
+        jarakKm: Number(jarakHitung.toFixed(2))
+      }
+    });
+
+    revalidatePath("/dashboard/sppg");
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+}
