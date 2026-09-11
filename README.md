@@ -1,4 +1,4 @@
-# SIGMA — Strategic Intelligence for Gizi & Mapping Analysis
+# SIGMA: Strategic Intelligence for Gizi & Mapping Analysis
 
 [![Next.js](https://img.shields.io/badge/Next.js_16-000000?logo=nextdotjs&logoColor=fff)](#tech-stack)
 [![React](https://img.shields.io/badge/React_19-149ECA?logo=react&logoColor=fff)](#tech-stack)
@@ -11,7 +11,7 @@
 
 > **AI-Powered Geospatial Platform for National Free Nutritious Meal (MBG) Kitchen Placement, Distribution Logistics, and Food Quality Assurance.**
 
-Developed for **IN:NOVATE – CodeUp! 2026** Hackathon (Politeknik Astra) under the theme *"One Earth, One Daye, Infinite Solutions"*, supporting **UN SDGs 2 (Zero Hunger)**, **SDG 3 (Good Health and Well-Being)**, and **SDG 11 (Sustainable Cities and Communities)**.
+Developed for **IN:NOVATE - CodeUp! 2026** Hackathon (Politeknik Astra) under the theme *"One Earth, One Daye, Infinite Solutions"*, supporting **UN SDGs 2 (Zero Hunger)**, **SDG 3 (Good Health and Well-Being)**, and **SDG 11 (Sustainable Cities and Communities)**.
 
 ![SIGMA Landing Preview](./public/sigma-preview.webp)
 
@@ -200,10 +200,10 @@ sigma/
 
 ## Team & Acknowledgments
 
-SIGMA was built by **Team Raja Iblis** representing **S1 Terapan Sistem Informasi Kota Cerdas, Fakultas Ilmu Terapan, Universitas Telkom** for the **IN:NOVATE – CodeUp! 2026** competition:
+SIGMA was built by **Team SIGMA** representing **S1 Terapan Sistem Informasi Kota Cerdas, Fakultas Ilmu Terapan, Universitas Telkom** for the **IN:NOVATE - CodeUp! 2026** competition:
 
-- **Ghazy Nabil Alghifari** — Full-Stack Developer (Architecture, Frontend, Backend, Geospatial Integration)
-- **Muhammad Haikal** — Machine Learning & Data Modeling
-- **Dava Nur Khalik Ilham** — UI/UX Design & Quality Assurance
+- **Ghazy Nabil Alghifari** - Full-Stack Developer (Architecture, Frontend, Backend, Geospatial Integration)
+- **Muhammad Haikal** - Machine Learning & Data Modeling
+- **Dava Nur Khalik Ilham** - UI/UX Design & Quality Assurance
 
 *Special thanks to Politeknik Astra and the IN:NOVATE 2026 committee for providing the platform to build meaningful civic tech solutions.*

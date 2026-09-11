@@ -2,7 +2,7 @@
 ### Strategic Intelligence for Gizi & Mapping Analysis
 **Versi:** 1.0.0
 **Tanggal:** 21 Mei 2026
-**Tim:** Raja Iblis — Ghazy Nabil Alghifari, Muhammad Haikal, Dava Nur Khalik Ilham
+**Tim:** Tim SIGMA - Ghazy Nabil Alghifari, Muhammad Haikal, Dava Nur Khalik Ilham
 **Kompetisi:** IN:NOVATE – CodeUp! 2026 · Politeknik Astra
 **Institusi:** S1 Terapan Sistem Informasi Kota Cerdas, Fakultas Ilmu Terapan, Universitas Telkom
 

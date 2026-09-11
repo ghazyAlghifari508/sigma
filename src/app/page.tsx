@@ -48,7 +48,7 @@ export default function LandingPage() {
             </h1>
             
             <p className="text-gray-600 text-lg max-w-xl leading-relaxed">
-              SIGMA memastikan setiap porsi makanan bergizi gratis sampai ke tangan siswa Indonesia — terukur, transparan, dan terlacak dengan dukungan AI geospasial.
+              SIGMA memastikan setiap porsi makanan bergizi gratis sampai ke tangan siswa Indonesia: terukur, transparan, dan terlacak dengan dukungan AI geospasial.
             </p>
             
             <div className="pt-4 flex flex-wrap gap-4">
@@ -211,7 +211,7 @@ export default function LandingPage() {
             </h2>
             
             <p className="text-slate-600 leading-relaxed text-lg">
-              Di SIGMA, setiap laporan distribusi makanan diverifikasi secara otomatis — memberikan data gizi yang akurat, aman, dan dapat dipertanggungjawabkan kepada pemerintah.
+              Di SIGMA, setiap laporan distribusi makanan diverifikasi secara otomatis, memberikan data gizi yang akurat, aman, dan dapat dipertanggungjawabkan kepada pemerintah.
             </p>
             
             <div className="bg-[#fffbf7] rounded-2xl p-6 md:p-8 flex items-start gap-4 md:gap-6 shadow-sm border border-slate-100 relative overflow-hidden group hover:shadow-md transition-shadow">

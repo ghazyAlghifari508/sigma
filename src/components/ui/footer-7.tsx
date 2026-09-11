@@ -75,7 +75,7 @@ export const Footer7 = ({
   sections = defaultSections,
   description = "Strategic Intelligence for Gizi & Mapping Analysis (SIGMA) adalah platform cerdas berbasis AI K-Means Spatial untuk mengoptimalkan penempatan dapur Makan Bergizi Gratis (MBG) dan memantau distribusi logistik secara transparan.",
   socialLinks = defaultSocialLinks,
-  copyright = "© 2026 SIGMA. Hak cipta dilindungi. Dipersembahkan oleh Tim Raja Iblis.",
+  copyright = "© 2026 SIGMA. Hak cipta dilindungi. Dipersembahkan oleh Tim SIGMA.",
   legalLinks = defaultLegalLinks,
 }: Footer7Props) => {
   return (
