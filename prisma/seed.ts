@@ -6,7 +6,10 @@ import { config } from "dotenv";
 
 config();
 
-const connectionString = process.env.DATABASE_URL || "postgresql://postgres.hmmavuqdcpvcurtjdjkn:mGBBEzeBoMu49BuN@aws-1-ap-southeast-1.pooler.supabase.com:6543/postgres?pgbouncer=true";
+const connectionString = process.env.DATABASE_URL;
+if (!connectionString) {
+  throw new Error("DATABASE_URL environment variable is required for seeding.");
+}
 const pool = new Pool({ connectionString });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
